@@ -1,0 +1,18 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Sign Up!</ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content padding>
+    <form>
+        <ion-item>
+            <ion-label>Email</ion-label>
+            <ion-input type="email" (input)="data.user.email = $event.target.value" ></ion-input>
+            </ion-item>
+        <ion-item>
+            <ion-label>Password</ion-label>
+            <ion-input type="password" (input)="data.user.password = $event.target.value"></ion-input>
+        </ion-item>
+        <button ion-button color='primary' type='submit' (click)="signUp()">Sign Up</button>
+    </form>
+</ion-content>
