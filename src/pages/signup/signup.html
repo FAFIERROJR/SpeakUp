@@ -4,7 +4,7 @@
     </ion-navbar>
 </ion-header>
 <ion-content padding>
-    <form>
+    <ion-grid fixed>
         <ion-item>
             <ion-label>Email</ion-label>
             <ion-input type="email" (input)="data.user.email = $event.target.value" ></ion-input>
@@ -14,5 +14,5 @@
             <ion-input type="password" (input)="data.user.password = $event.target.value"></ion-input>
         </ion-item>
         <button ion-button color='primary' type='submit' (click)="signUp()">Sign Up</button>
-    </form>
+    </ion-grid>
 </ion-content>

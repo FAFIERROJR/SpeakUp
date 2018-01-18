@@ -1,6 +1,7 @@
 import{ Component } from '@angular/core';
 import{ NavController, NavParams} from 'ionic-angular';
 import{AngularFireAuth} from 'angularfire2/auth';
+import { MainPage } from '../main/main';
 
 @Component({
     selector: 'page-login',
@@ -22,6 +23,15 @@ export class LoginPage{
 
     login(){
         this.afAuth.auth.signInWithEmailAndPassword(
-            this.data.user.email, this.data.user.password);
+            this.data.user.email, this.data.user.password)
+            .then((success)=> {
+                this.navCtrl.push(MainPage);
+            }).catch(
+                (err)=>{
+                    console.log(err);
+                    this.data.user = '';
+                    this.data.email = '';
+                }
+            );
     }
 }

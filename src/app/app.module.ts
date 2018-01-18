@@ -24,6 +24,7 @@ export const firebaseConfig = {
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { MainPage } from '../pages/main/main';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ListPage,
     LoginPage,
     WelcomePage,
-    SignUpPage
+    SignUpPage,
+    MainPage
   ],
   imports: [
     BrowserModule,
@@ -50,7 +52,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
     ListPage,
     LoginPage,
     WelcomePage,
-    SignUpPage
+    SignUpPage,
+    MainPage
   ],
   providers: [
     StatusBar,

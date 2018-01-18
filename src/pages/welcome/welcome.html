@@ -4,8 +4,14 @@
     </ion-navbar>
 </ion-header>
 <ion-content>
-    <form>
-        <button ion-button (click)="goLoginPage()">Login</button>
-        <button ion-button (click)="goSignUpPage()">Sign Up</button>
-    </form>
+    <ion-grid fixed>
+        <ion-row align-items-center>
+            <ion-col col-12 col-md-6>
+                <button ion-button full (click)="goLoginPage()">Login</button>
+            </ion-col>
+            <ion-col>
+                <button ion-button full (click)="goSignUpPage()">Sign Up</button>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
 </ion-content>

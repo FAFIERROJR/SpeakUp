@@ -1,1 +1,7 @@
-page-welcome{}
+page-welcome{
+    ion-content{
+        ion-grid{
+            height: 100%;
+        }
+    }
+}
