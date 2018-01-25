@@ -10,6 +10,7 @@ import {WelcomePage} from '../pages/welcome/welcome'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { TestingPage } from '../pages/testing/testing';
 
 
 @Component({
@@ -36,7 +37,8 @@ export class MyApp {
       {title: 'Login', component: LoginPage},
       {title:'Sign Up', component: SignUpPage},
       { title: 'Hello Ionic', component: HelloIonicPage },
-      { title: 'My First List', component: ListPage }
+      { title: 'My First List', component: ListPage },
+      {title: 'Testing Page', component: TestingPage}
     ];
   }
 
@@ -53,6 +55,7 @@ export class MyApp {
     // close the menu when clicking a link from the menu
     this.menu.close();
     // navigate to the new page if it is not the current page
-    this.nav.setRoot(page.component);
+    //this.nav.setRoot(page.component);
+    this.nav.push(page.component);//this creates the page with a backbutton
   }
 }
