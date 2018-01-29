@@ -27,12 +27,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { MainPage } from '../pages/main/main';
 import { TestingPage } from '../pages/testing/testing';
-<<<<<<< HEAD
-=======
 import {ChatroomPage} from '../pages/chatroom/chatroom'
 import { Comment } from './comment';
 import { CommentsComponent } from '../components/comments/comments';
->>>>>>> 28959bf35fad5335998026948fe2ca3f43a9eab1
 
 @NgModule({
   declarations: [
@@ -44,13 +41,9 @@ import { CommentsComponent } from '../components/comments/comments';
     WelcomePage,
     SignUpPage,
     MainPage,
-<<<<<<< HEAD
-    TestingPage
-=======
     TestingPage,
     ChatroomPage,
     CommentsComponent
->>>>>>> 28959bf35fad5335998026948fe2ca3f43a9eab1
   ],
   imports: [
     BrowserModule,
