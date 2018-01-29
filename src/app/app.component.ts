@@ -11,6 +11,7 @@ import {WelcomePage} from '../pages/welcome/welcome'
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { TestingPage } from '../pages/testing/testing';
+import { AngularFireDatabase } from 'angularfire2/database';
 
 
 @Component({
@@ -27,7 +28,8 @@ export class MyApp {
     public platform: Platform,
     public menu: MenuController,
     public statusBar: StatusBar,
-    public splashScreen: SplashScreen
+    public splashScreen: SplashScreen,
+    public afDB: AngularFireDatabase
   ) {
     this.initializeApp();
 

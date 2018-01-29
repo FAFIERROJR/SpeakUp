@@ -27,6 +27,9 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { MainPage } from '../pages/main/main';
 import { TestingPage } from '../pages/testing/testing';
+import {ChatroomPage} from '../pages/chatroom/chatroom'
+import { Comment } from './comment';
+import { CommentsComponent } from '../components/comments/comments';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,9 @@ import { TestingPage } from '../pages/testing/testing';
     WelcomePage,
     SignUpPage,
     MainPage,
-    TestingPage
+    TestingPage,
+    ChatroomPage,
+    CommentsComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +63,8 @@ import { TestingPage } from '../pages/testing/testing';
     WelcomePage,
     SignUpPage,
     MainPage,
-    TestingPage
+    TestingPage,
+    ChatroomPage
   ],
   providers: [
     StatusBar,
