@@ -3,6 +3,8 @@ import { Keyboard } from 'ionic-angular/platform/keyboard';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database';
+import { firebaseConfig } from '../../app/app.module';
+
 
 @Component({
   selector: 'page-testing',
@@ -21,14 +23,14 @@ export class TestingPage {
                content: ''
            }
        };
-       this.username = "userNamePlaceHolder"
-
        this.chatroomID = navParams.get('chatroomID');
 }
 
-//update to firebase. it is currently replacing the old "content" with the new content. 
-//need to change it so it adds on and does not replace
 send(){
+  let dateTime = new Date();
+
+  this.username = "userNamePlaceHolder: " + dateTime;
+
   this.afdb.object('chatrooms/' + this.chatroomID + '/comments').update({
     [this.username]: {
       content: this.data.input.content
