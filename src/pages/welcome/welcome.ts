@@ -5,6 +5,8 @@ import{LoginPage} from '../login/login'
 import{SignUpPage} from '../signup/signup'
 import{TestingPage} from '../testing/testing'
 import { HelloIonicPage } from '../hello-ionic/hello-ionic';
+import { ChatroomPage } from '../chatroom/chatroom';
+import { PARAMETERS } from '@angular/core/src/util/decorators';
 
 @Component({
     selector: 'page-Welcome',
@@ -23,10 +25,14 @@ export class WelcomePage{
     }
 
     goTestPage(){
-        this.navCtrl.push(TestingPage);
+        this.navCtrl.push(TestingPage, {'chatroomID': 0});
     }
 
     goHelloIonicPage(){
         this.navCtrl.push(HelloIonicPage);
+    }
+
+    goChatroomPage(){
+        this.navCtrl.push(ChatroomPage, {'chatroomID': 0});
     }
 }

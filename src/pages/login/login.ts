@@ -1,5 +1,5 @@
 import{ Component } from '@angular/core';
-import{ NavController, NavParams} from 'ionic-angular';
+import{ NavController, NavParams, AlertController} from 'ionic-angular';
 import{AngularFireAuth} from 'angularfire2/auth';
 import { MainPage } from '../main/main';
 
@@ -11,7 +11,7 @@ export class LoginPage{
     data: any
 
     constructor(public navCtrl: NavController, public navParams: NavParams,
-         public afAuth:AngularFireAuth){
+         public afAuth:AngularFireAuth, public alertCtrl: AlertController){
              this.data = {
                 user:{
                     email: '',
@@ -28,9 +28,14 @@ export class LoginPage{
                 this.navCtrl.push(MainPage);
             }).catch(
                 (err)=>{
-                    console.log(err);
-                    this.data.user = '';
-                    this.data.email = '';
+                    let alert = this.alertCtrl.create(({
+                        title:'Login Failed',
+                        subTitle: err,
+                        buttons: ['Dismiss']
+                    }));
+                    alert.present();
+                    this.data.user.email = '';
+                    this.data.user.password = '';
                 }
             );
     }

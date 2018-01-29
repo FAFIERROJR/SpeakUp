@@ -14,9 +14,11 @@
 
 <!-- put stuff here -->
 <ion-content padding>
-    <div id="TestDiv">
-      </div>
+  <ion-grid>
+    <comments chatroom="chatroomID"></comments>
+  </ion-grid>
   <ion-item>
-    <ion-input id="MessageInput" placeholder="Type here..." ></ion-input>
+    <ion-input id="MessageInput" type="text" [(ngModel)]="data.input.content" placeholder="Type here..."></ion-input>
   </ion-item>
+  <button ion-button color='primary' type='submit' (click)="send()">ENTER</button>
 </ion-content>
