@@ -26,6 +26,7 @@ export class TestingPage {
        this.chatroomID = navParams.get('chatroomID');
 }
 
+//uses system's time, need to change to server's time. 
 send(){
   let dateTime = new Date();
 
