@@ -31,8 +31,7 @@ send(){
   // let dateTime = new Date();
   let dateTime = Date.now();
 
-  this.username = "userNamePlaceHolder" + ":" + dateTime;
-
+  this.username = dateTime + ": " + "userNamePlaceHolder";
   this.afdb.object('chatrooms/' + this.chatroomID + '/comments').update({
     [this.username]: {
       content: this.data.input.content
