@@ -1,6 +1,5 @@
-<h2>Comments</h2>
 <ion-list>
-    <button ion-item *ngFor="let comment of comments | async">
-      {{comment.content}}
-    </button>
-  </ion-list>
+  <div id="CommentItem" ion-item text-wrap *ngFor="let comment of comments | async">
+    {{comment.content}}
+  </div>
+</ion-list>

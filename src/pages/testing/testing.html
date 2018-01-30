@@ -9,16 +9,17 @@
   <ion-navbar>
     <ion-title>Testing page to test stuff</ion-title>
   </ion-navbar>
-
 </ion-header>
 
 <!-- put stuff here -->
-<ion-content padding>
-  <ion-grid>
-    <comments chatroom="chatroomID"></comments>
-  </ion-grid>
-  <ion-item>
-    <ion-input id="MessageInput" type="text" [(ngModel)]="data.input.content" placeholder="Type here..."></ion-input>
-  </ion-item>
-  <button ion-button color='primary' type='submit' (click)="send()">ENTER</button>
-</ion-content>
+<ion-content col-12 col-md-6>
+    <ion-grid id="CommentsArea">
+      <comments chatroom="chatroomID"></comments>
+    </ion-grid>
+
+    <ion-row id="CommentInputArea">
+      <ion-input id="CommentInput" type="text" [(ngModel)]="data.input.content" placeholder="Type here..."></ion-input>
+      <button id="SendButton" ion-button float-right color='primary' type='submit' (click)="send()">Send</button>                
+    </ion-row>
+
+  </ion-content>
