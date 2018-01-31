@@ -6,6 +6,17 @@ page-testing {
         height: 100vh;
         overflow-y: none;
     }
+
+    ion-title {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 0 90px 1px;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+      }
+
     #CommentInputArea{
         position: absolute;
         bottom: 0;
@@ -15,6 +26,7 @@ page-testing {
         border-radius: 4px;
         background-color: white;
     }
+    
     #CommentsArea{
         position: absolute;
         top: 0;
@@ -24,4 +36,5 @@ page-testing {
         border: 1px solid blue;
         border-radius: 4px;
     }
+    
 }

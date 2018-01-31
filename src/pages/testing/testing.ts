@@ -32,11 +32,10 @@ export class TestingPage {
        this.chatroomID = navParams.get('chatroomID');
        this.chatroomRef = this.afdb.list('chatrooms/' + this.chatroomID + '/comments');
        this.username ="get_username";
-       this.dateTime = firebase.database.ServerValue.TIMESTAMP;
+       this.dateTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time
        this.commentPoints = "get_points";
 }
 
-//uses system's time, need to change to server's time. 
 send(){
   // let dateTime = new Date();//this give a timestamp like Tue Jan 30 2018 01:31:17 GMT-0800 (PST) 
   // let dateTime = Date.now();
@@ -49,7 +48,9 @@ send(){
   // }
   // });
 
-   
+  /**
+   * This pushes each comment to the database in chronological order
+   */
   this.chatroomRef.push({
       username: this.username,
       content: this.data.input.content,
@@ -57,6 +58,7 @@ send(){
       points: this.commentPoints
   });
 
+  //clears the inputbox
   this.data.input.content = '';
 }
 
