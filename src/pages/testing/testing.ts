@@ -1,20 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Keyboard } from 'ionic-angular/platform/keyboard';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFireDatabase } from 'angularfire2/database';
 import { firebaseConfig } from '../../app/app.module';
-
+import firebase from 'firebase';
+import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 @Component({
   selector: 'page-testing',
   templateUrl: 'testing.html'
 })
 
-export class TestingPage {
-  data:any;
+export class TestingPage implements OnInit{
+  item: any;
+  chatroomRef: any;
+  data: any;
   chatroomID : any;
   username: any;
+  serverTime: any;
+  messageDate: any;
+  commentPoints: any;
+  userDate: any;
+  userTime: any;
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public afAuth:AngularFireAuth,public afdb:AngularFireDatabase, public alertCtrl: AlertController){
@@ -23,31 +32,65 @@ export class TestingPage {
                content: ''
            }
        };
+       
        this.chatroomID = navParams.get('chatroomID');
-}
-
-//uses system's time, need to change to server's time. 
-send(){
-  // let dateTime = new Date();//this give a timestamp like Tue Jan 30 2018 01:31:17 GMT-0800 (PST) 
-  let dateTime = Date.now();
-  
-  //this.username ="userNamePlaceHolder" + ": " + dateTime;
-  this.username = dateTime + ": " + "userNamePlaceHolder";
-
-  //update the comments inside the chatroom 0 database.
-  this.afdb.object('chatrooms/' + this.chatroomID + '/comments').update({
-    [this.username]: {
-      content: this.data.input.content
+       this.chatroomRef = this.afdb.list('chatrooms/' + this.chatroomID + '/comments');
+       this.username ="get_username";
+       this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time
+       this.commentPoints = "get_points";
+    
     }
-  });
 
-  this.data.input.content = '';
-}
-
-
-ionViewDidLoad() {
-  console.log('ionViewDidLoad ChatroomPage');
-}
+  send(){
+    // let dateTime = new Date();//this give a timestamp like Tue Jan 30 2018 01:31:17 GMT-0800 (PST) 
+    // let dateTime = Date.now();
+    // this.username = dateTime + ": " + "userNamePlaceHolder";
   
+    // //update the comments inside the chatroom 0 database.
+    // this.afdb.object('chatrooms/' + this.chatroomID + '/comments').update({
+    //   [this.username]: {
+    //       content: this.data.input.content
+    // }
+    // });
+
+    //get the user's system time and convert it
+    let systemDate = new Date();
+    this.userDate = systemDate.toLocaleTimeString();
+    this.userTime = systemDate.toLocaleDateString();
+    /**
+     * This pushes each comment to the database in chronological order
+     */
+    this.chatroomRef.push({
+        username: this.username,
+        content: this.data.input.content,
+        server_time: this.serverTime,
+        user_date: this.userDate,
+        user_time: this.userTime,
+        points: this.commentPoints
+    });
+    
+    //this.scrollToBottom();
+    //clears the inputbox
+    this.data.input.content = '';
+  }
+
+  /**
+   * scroll to the latest message on the very bottom of the chat
+   */
+  // ngOnInit(){
+  //   this.scrollToBottom();
+  //   console.log('ngOnInit ChatroomPage');
+  // }
+
+  // ionViewDidLoad() {
+  //   console.log('ionViewDidLoad ChatroomPage');
+  // }
+    
+  // scrollToBottom(): void {
+  //   try {
+  //       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+  //   } catch(err) { }                 
+  // }
+
 }
 

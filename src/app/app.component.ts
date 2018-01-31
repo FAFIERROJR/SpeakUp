@@ -20,7 +20,7 @@ import { AngularFireDatabase } from 'angularfire2/database';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
 
-  // make HelloIonicPage the root (or first) page
+  // make WelcomePage the root (or first) page
   rootPage = WelcomePage;
   pages: Array<{title: string, component: any}>;
 
@@ -38,8 +38,8 @@ export class MyApp {
       {title:'Welcome', component: WelcomePage},
       {title: 'Login', component: LoginPage},
       {title:'Sign Up', component: SignUpPage},
-      { title: 'Hello Ionic', component: HelloIonicPage },
-      { title: 'My First List', component: ListPage },
+      {title: 'Hello Ionic', component: HelloIonicPage},
+      {title: 'My First List', component: ListPage},
       {title: 'Testing Page', component: TestingPage}
     ];
   }
