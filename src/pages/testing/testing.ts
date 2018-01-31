@@ -12,7 +12,7 @@ import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
   templateUrl: 'testing.html'
 })
 
-export class TestingPage {
+export class TestingPage{
   item: any;
   chatroomRef: any;
   data: any;
