@@ -1,5 +1,8 @@
 <ion-list>
+  <!-- *ngFor is a for loop -->
   <div id="CommentItem" ion-item text-wrap *ngFor="let comment of comments | async">
     {{comment.content}}
+    <button ion-button float-right><ion-icon ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>
+    <button ion-button float-right><ion-icon ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
   </div>
 </ion-list>

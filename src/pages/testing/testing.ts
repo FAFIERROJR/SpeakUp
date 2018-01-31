@@ -28,11 +28,13 @@ export class TestingPage {
 
 //uses system's time, need to change to server's time. 
 send(){
-  // let dateTime = new Date();
+  // let dateTime = new Date();//this give a timestamp like Tue Jan 30 2018 01:31:17 GMT-0800 (PST) 
   let dateTime = Date.now();
+  
+  //this.username ="userNamePlaceHolder" + ": " + dateTime;
+  this.username = dateTime + ": " + "userNamePlaceHolder";
 
-  this.username = "userNamePlaceHolder" + ":" + dateTime;
-
+  //update the comments inside the chatroom 0 database.
   this.afdb.object('chatrooms/' + this.chatroomID + '/comments').update({
     [this.username]: {
       content: this.data.input.content
