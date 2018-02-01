@@ -25,7 +25,7 @@ export class WelcomePage{
     }
 
     goTestPage(){
-        this.navCtrl.push(TestingPage, {'chatroomID': 1});
+        this.navCtrl.push(TestingPage, {'chatroomID': 1, 'username': 0})
     }
 
     goHelloIonicPage(){
