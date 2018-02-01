@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Keyboard } from 'ionic-angular/platform/keyboard';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AngularFireDatabase } from 'angularfire2/database';
+import { AngularFireDatabase, snapshotChanges } from 'angularfire2/database';
 import { firebaseConfig } from '../../app/app.module';
 import firebase from 'firebase';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
@@ -20,10 +20,8 @@ export class TestingPage{
   username: any;
   serverTime: any;
   messageDate: any;
-  commentPoints: any;
   userDate: any;
   userTime: any;
-  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public afAuth:AngularFireAuth,public afdb:AngularFireDatabase, public alertCtrl: AlertController){
@@ -35,10 +33,8 @@ export class TestingPage{
        
        this.chatroomID = navParams.get('chatroomID');
        this.chatroomRef = this.afdb.list('chatrooms/' + this.chatroomID + '/comments');
-       this.username ="get_username";
+       this.username = "get_username"
        this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time
-       this.commentPoints = "get_points";
-    
     }
 
   send(){
@@ -55,8 +51,9 @@ export class TestingPage{
 
     //get the user's system time and convert it
     let systemDate = new Date();
-    this.userDate = systemDate.toLocaleTimeString();
-    this.userTime = systemDate.toLocaleDateString();
+    this.userDate = systemDate.toLocaleDateString();
+    this.userTime = systemDate.toLocaleTimeString();
+  
     /**
      * This pushes each comment to the database in chronological order
      */
@@ -65,14 +62,34 @@ export class TestingPage{
         content: this.data.input.content,
         server_time: this.serverTime,
         user_date: this.userDate,
-        user_time: this.userTime,
-        points: this.commentPoints
+        user_time: this.userTime
     });
     
     //this.scrollToBottom();
     //clears the inputbox
     this.data.input.content = '';
   }
+
+  /**
+   * this generates an uid for the comments as a properity
+   */
+  // send(){
+  //   this.myRef = firebase.database().ref().push();
+  //   this.uniqueKey = this.myRef.key;
+  //   /**
+  //    * This pushes each comment to the database in chronological order
+  //    */
+  //  let newComment = {
+  //                       commentKey: this.uniqueKey,
+  //                       username: this.username,
+  //                       content: this.data.input.content,
+  //                       server_time: this.serverTime,
+  //                       user_date: this.userDate,
+  //                       user_time: this.userTime
+  //                   };
+
+  //   this.chatroomRef.push(newComment);
+  // }
 
   /**
    * scroll to the latest message on the very bottom of the chat
