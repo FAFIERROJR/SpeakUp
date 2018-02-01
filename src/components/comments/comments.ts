@@ -27,7 +27,7 @@ export class CommentsComponent {
   
     onClick(event) {
       console.log(event);
-      console.log(event.target.parentElement.attributes.id);
+      //console.log(event.target.parentElement.attributes.id);
       console.log(event.target.parentElement.getAttribute('id'));
     }
 

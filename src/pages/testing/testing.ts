@@ -13,11 +13,8 @@ import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 })
 
 export class TestingPage{
-<<<<<<< HEAD
-=======
   uniqueKey: string;
   myRef: firebase.database.ThenableReference;
->>>>>>> defc1c715e3c06ed96dbfe04636b59269d610d60
   item: any;
   chatroomRef: any;
   data: any;
@@ -83,8 +80,8 @@ export class TestingPage{
     this.userDate = systemDate.toLocaleDateString();
     this.userTime = systemDate.toLocaleTimeString();
     
-    this.myRef = firebase.database().ref().push();
-    this.uniqueKey = this.myRef.key;
+    // this.myRef = firebase.database().ref().push();
+    // this.uniqueKey = this.myRef.key;
     /**
      * This pushes each comment to the database in chronological order
      */
@@ -101,7 +98,7 @@ export class TestingPage{
     this.afdb.object('chatrooms/' + this.chatroomID + '/comments/' + ukey).update({
       commentKey: ukey
     })
-    console.log(ukey)
+    //console.log(ukey)
 
     this.data.input.content = '';
   }
