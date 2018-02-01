@@ -14,7 +14,6 @@ import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 export class TestingPage{
   uniqueKey: string;
-  myRef: firebase.database.ThenableReference;
   item: any;
   chatroomRef: any;
   data: any;
@@ -36,70 +35,36 @@ export class TestingPage{
        this.chatroomID = navParams.get('chatroomID');
        this.chatroomRef = this.afdb.list('chatrooms/' + this.chatroomID + '/comments');
        this.username = "get_username"
-       this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time
+       this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time and stamp it
     }
 
-  // send(){
-  //   // let dateTime = new Date();//this give a timestamp like Tue Jan 30 2018 01:31:17 GMT-0800 (PST) 
-  //   // let dateTime = Date.now();
-  //   // this.username = dateTime + ": " + "userNamePlaceHolder";
-  
-  //   // //update the comments inside the chatroom 0 database.
-  //   // this.afdb.object('chatrooms/' + this.chatroomID + '/comments').update({
-  //   //   [this.username]: {
-  //   //       content: this.data.input.content
-  //   // }
-  //   // });
-
-  //   //get the user's system time and convert it
-  //   let systemDate = new Date();
-  //   this.userDate = systemDate.toLocaleDateString();
-  //   this.userTime = systemDate.toLocaleTimeString();
-  
-  //   /**
-  //    * This pushes each comment to the database in chronological order
-  //    */
-  //   this.chatroomRef.push({
-  //       username: this.username,
-  //       content: this.data.input.content,
-  //       server_time: this.serverTime,
-  //       user_date: this.userDate,
-  //       user_time: this.userTime
-  //   });
-    
-  //   //this.scrollToBottom();
-  //   //clears the inputbox
-  //   this.data.input.content = '';
-  // }
-
   /**
-   * this generates an uid for the comments as a properity
+   * When the send button is clicked, push a new comment with its content and properties
    */
   send(){
+    //create a new date object using the user's system time. Using system's date for (user's might be in different location)
     let systemDate = new Date();
-    this.userDate = systemDate.toLocaleDateString();
-    this.userTime = systemDate.toLocaleTimeString();
+    this.userDate = systemDate.toLocaleDateString();//convert the date to mm/dd/yyyy
+    this.userTime = systemDate.toLocaleTimeString();//convert the time to 12 hours 
     
-    // this.myRef = firebase.database().ref().push();
-    // this.uniqueKey = this.myRef.key;
-    /**
-     * This pushes each comment to the database in chronological order
-     */
-   let newComment = {
-                        username: this.username,
-                        content: this.data.input.content,
-                        server_time: this.serverTime,
-                        user_date: this.userDate,
-                        user_time: this.userTime
-                    };
+    //new comment's property
+    let newComment = {
+      username: this.username,
+      content: this.data.input.content,//the input's value using ngmodel
+      server_time: this.serverTime, //the firebase's server time
+      user_date: this.userDate, //user's system's date
+      user_time: this.userTime //user's system's time
+    };
 
-    let ukey = this.chatroomRef.push(newComment).key;
+    //obtain the key when the new comment is push
+    this.uniqueKey = this.chatroomRef.push(newComment).key;
 
-    this.afdb.object('chatrooms/' + this.chatroomID + '/comments/' + ukey).update({
-      commentKey: ukey
+    //using that key, find the comment with that key and update the key as one of its properity to be use later on
+    this.afdb.object('chatrooms/' + this.chatroomID + '/comments/' + this.uniqueKey).update({
+      commentKey: this.uniqueKey
     })
-    //console.log(ukey)
 
+    //clear the input box using ngmodel
     this.data.input.content = '';
   }
 
