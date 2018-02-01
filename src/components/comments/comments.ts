@@ -28,6 +28,7 @@ export class CommentsComponent {
     onClick(event) {
       console.log(event);
       console.log(event.target.parentElement.attributes.id);
+      console.log(event.target.parentElement.getAttribute('id'));
     }
 
 
@@ -40,7 +41,7 @@ export class CommentsComponent {
 
   voteUp(event){
     this.i++;
-    let commentID = event.target.parentElement.attributes.id;//need to retreive the id for each comment
+    let commentID = event.target.parentElement.getAttribute('id');//need to retreive the id for each comment
 
     this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
      points: this.i
@@ -49,7 +50,7 @@ export class CommentsComponent {
 
   voteDown(event){
     this.i--;
-    let commentID = event.target.parentElement.attributes.id;//need to retreive the id for each comment
+    let commentID = event.target.parentElement.getAttribute('id');//need to retreive the id for each comment
     
     this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
     points: this.i

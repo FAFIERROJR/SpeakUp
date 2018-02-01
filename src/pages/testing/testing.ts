@@ -86,7 +86,6 @@ export class TestingPage{
      * This pushes each comment to the database in chronological order
      */
    let newComment = {
-                        commentKey: this.uniqueKey,
                         username: this.username,
                         content: this.data.input.content,
                         server_time: this.serverTime,
@@ -94,7 +93,13 @@ export class TestingPage{
                         user_time: this.userTime
                     };
 
-    this.chatroomRef.push(newComment);
+    let ukey = this.chatroomRef.push(newComment).key;
+
+    this.afdb.object('chatrooms/' + this.chatroomID + '/comments/' + ukey).update({
+      commentKey: ukey
+    })
+    console.log(ukey)
+
     this.data.input.content = '';
   }
 
