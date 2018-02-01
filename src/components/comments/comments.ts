@@ -23,9 +23,14 @@ export class CommentsComponent {
 
   constructor(public afDB:AngularFireDatabase, public navParams: NavParams) {
     this.i = 0;
-    this.commentID = "-L4Do4TJ0-TgzdmnR_YW";
   }
   
+    onClick(event) {
+      console.log(event);
+      console.log(event.target.parentElement.attributes.id);
+    }
+
+
   ngOnInit(){
     this.chatroomID = this.navParams.get('chatroomID');
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
@@ -33,16 +38,20 @@ export class CommentsComponent {
 
   }
 
-  voteUp(){
+  voteUp(event){
     this.i++;
-    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + this.commentID).update({
+    let commentID = event.target.parentElement.attributes.id;//need to retreive the id for each comment
+
+    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
      points: this.i
     });
   }
 
-  voteDown(){
+  voteDown(event){
     this.i--;
-    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + this.commentID).update({
+    let commentID = event.target.parentElement.attributes.id;//need to retreive the id for each comment
+    
+    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
     points: this.i
     });
   }
