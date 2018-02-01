@@ -30,6 +30,7 @@ import { TestingPage } from '../pages/testing/testing';
 import {ChatroomPage} from '../pages/chatroom/chatroom'
 import { Comment } from './comment';
 import { CommentsComponent } from '../components/comments/comments';
+import {NewPage} from '../pages/new/new'
 
 @NgModule({
   declarations: [
@@ -43,7 +44,8 @@ import { CommentsComponent } from '../components/comments/comments';
     MainPage,
     TestingPage,
     ChatroomPage,
-    CommentsComponent
+    CommentsComponent,
+    NewPage
   ],
   imports: [
     BrowserModule,
@@ -64,7 +66,8 @@ import { CommentsComponent } from '../components/comments/comments';
     SignUpPage,
     MainPage,
     TestingPage,
-    ChatroomPage
+    ChatroomPage,
+    NewPage
   ],
   providers: [
     StatusBar,
