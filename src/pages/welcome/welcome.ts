@@ -19,9 +19,6 @@ export class WelcomePage{
 
     constructor(public navCtrl:NavController, public navParams: NavParams){
         this.username = navParams.get('username');
-        this.data = {
-            username: this.username
-        }
     }
 
     goLoginPage(){
