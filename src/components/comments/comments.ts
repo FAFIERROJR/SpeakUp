@@ -110,4 +110,20 @@ export class CommentsComponent {
       points: this.newPoints
     }); 
   }
+
+  vote(event, commentID, commentPoints, pointDelta){
+    console.log(commentID + " " + commentPoints + " " + pointDelta);
+    /**
+     * calculate new points
+     */
+    let newPoints = commentPoints + pointDelta;
+
+    /**
+     * update database
+     */
+
+    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
+      points: newPoints
+    }); 
+  }
 }

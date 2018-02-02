@@ -12,8 +12,8 @@
         <p>{{comment.content}}</p>
       </div>
       <div id="{{comment.commentKey}}" col-2 col-sm-2 float-right >
-        <button ion-button small (click)="voteUp($event)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
-        <button ion-button small (click)="voteDown($event)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
+        <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
+        <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
       </div>
   </ion-row>
   </div>
