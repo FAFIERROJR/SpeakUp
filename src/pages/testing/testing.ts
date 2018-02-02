@@ -53,7 +53,8 @@ export class TestingPage{
       content: this.data.input.content,//the input's value using ngmodel
       server_time: this.serverTime, //the firebase's server time
       user_date: this.userDate, //user's system's date
-      user_time: this.userTime //user's system's time
+      user_time: this.userTime, //user's system's time
+      points: 0
     };
 
     //obtain the key when the new comment is push

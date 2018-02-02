@@ -47,67 +47,26 @@ export class CommentsComponent {
     this.comments = this.chatroomRef.valueChanges()
   }
 
-  voteUp(event){
-    //retreive the id for each "comment" which is placed on the button div.
-    let commentID = event.target.parentElement.getAttribute('id');
-    //retrive the text of the points that is displayed between the element with the id {{comment.commentKey}}_points. <element id='{{comment.commentKey}}_points'> a number </element>
-    this.pointsElementTextContent = document.getElementById(commentID + '_points').textContent;
+  /**
+   * 
+   * @param event click event
+   * @param commentID comment.commentKey
+   * @param commentPoints comment.points
+   * @param pointDelta 1 or -1
+   */
+  vote(event, commentID, commentPoints, pointDelta){
+    console.log(commentID + " " + commentPoints + " " + pointDelta);
+    /**
+     * calculate new points
+     */
+    let newPoints = commentPoints + pointDelta;
 
     /**
-     * check to see if the text content is blank
-     * if it is blank 
-     *  then make this.commentPoint = 0 
-     *  then add it by i
-     * else
-     *  parse the text content to become an int 
-     *  then add it by i
+     * update database
      */
-    if(this.pointsElementTextContent.trim().length === 0){
-      this.commentPoints = 0;
-      this.newPoints = this.commentPoints + this.i;
-    }
-    else{
-      this.commentPoints = parseInt(this.pointsElementTextContent);
-      this.newPoints = this.commentPoints + this.i;
-    }
 
-    /**
-     * update the comment with the key {{comment.commentKey}} with a new property of points and the points value
-     */
     this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
-      points: this.newPoints
-    }); 
-  }
-
-  voteDown(event){
-    //retreive the id for each "comment" which is placed on the button div.
-    let commentID = event.target.parentElement.getAttribute('id');
-    //retrive the text of the points that is displayed between the element with the id {{comment.commentKey}}_points. <element id='{{comment.commentKey}}_points'> a number </element>
-    this.pointsElementTextContent = document.getElementById(commentID + '_points').textContent;
-
-    /**
-     * check to see if the text content is blank
-     * if it is blank 
-     *  then make this.commentPoint = 0 
-     *  then subtract it by i
-     * else
-     *  parse the text content to become an int 
-     *  then subtract it by i
-     */
-    if(this.pointsElementTextContent.trim().length === 0){
-      this.commentPoints = 0;
-      this.newPoints = this.commentPoints - this.i;
-    }
-    else{
-      this.commentPoints = parseInt(this.pointsElementTextContent);
-      this.newPoints = this.commentPoints - this.i;
-    }
-
-    /**
-     * update the comment with the key {{comment.commentKey}} with a new property of points and the points value
-     */
-    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
-      points: this.newPoints
+      points: newPoints
     }); 
   }
 }
