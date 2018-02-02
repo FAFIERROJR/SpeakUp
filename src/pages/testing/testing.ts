@@ -6,6 +6,7 @@ import { AngularFireDatabase, snapshotChanges } from 'angularfire2/database';
 import { firebaseConfig } from '../../app/app.module';
 import firebase from 'firebase';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { NgForm } from '@angular/forms/src/directives/ng_form';
 
 @Component({
   selector: 'page-testing',
