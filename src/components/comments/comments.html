@@ -1,8 +1,8 @@
 <ion-list>
   <div ion-item text-wrap *ngFor="let comment of comments | async"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
     <ion-row>
-      <div col-md-1 col-sm-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      
-      <div col-md-10 col-sm-8>
+      <div col-md-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      
+      <div col-md-10>
         <p>
           <span class="comment-username">{{comment.username}}:</span>
           <span class="comment-time">{{comment.user_time}}</span>
@@ -10,7 +10,7 @@
         </p>
         <p>{{comment.content}}</p>
       </div>
-      <div id="{{comment.commentKey}}" col-md-1 col-sm-3 float-right >
+      <div id="{{comment.commentKey}}" col-md-1 float-right >
         <span id="{{comment.commentKey}}_points" float-left>{{comment.points}}<span class="tiny-text-size">pts</span></span>
         <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
         <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
