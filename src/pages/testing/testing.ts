@@ -7,6 +7,7 @@ import { firebaseConfig } from '../../app/app.module';
 import firebase from 'firebase';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { NgForm } from '@angular/forms/src/directives/ng_form';
+import { WelcomePage } from '../welcome/welcome';
 
 @Component({
   selector: 'page-testing',
@@ -37,7 +38,7 @@ export class TestingPage{
        
        this.chatroomID = navParams.get('chatroomID');
        this.chatroomRef = this.afdb.list('chatrooms/' + this.chatroomID + '/comments');
-       this.username = "get_username"
+       this.username = navParams.get('username');
        this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time and stamp it
     }
 
@@ -109,6 +110,14 @@ export class TestingPage{
       } catch(err) { }
     }
   }
+
+  /**
+   * signout
+   */
+  signOut(): void {
+    this.afAuth.auth.signOut();
+    this.navCtrl.push(WelcomePage);
+}
 
 }
 

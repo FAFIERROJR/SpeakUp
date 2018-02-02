@@ -14,8 +14,14 @@ import { NewPage } from '../new/new';
     templateUrl:'welcome.html'
 })
 export class WelcomePage{
-    constructor(public navCtrl:NavController, public navParams: NavParams){
+    username: any;
+    data: any;
 
+    constructor(public navCtrl:NavController, public navParams: NavParams){
+        this.username = navParams.get('username');
+        this.data = {
+            username: this.username
+        }
     }
 
     goLoginPage(){
@@ -26,7 +32,7 @@ export class WelcomePage{
     }
 
     goTestPage(){
-        this.navCtrl.push(TestingPage, {'chatroomID': 1, 'username': 0})
+        this.navCtrl.push(TestingPage, {'chatroomID': 1, 'username': this.username})
     }
 
     goHelloIonicPage(){
