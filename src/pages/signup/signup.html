@@ -6,11 +6,19 @@
 <ion-content padding>
     <ion-grid fixed>
         <ion-item>
-            <ion-label>Username</ion-label>
-            <ion-input type="text" [(ngModel)]="data.user.username" ></ion-input>
+            <ion-label>First Name</ion-label>
+            <ion-input type="text" [(ngModel)]="data.user.firstname" ></ion-input>
         </ion-item>
         <ion-item>
-            <ion-label>Email</ion-label>
+            <ion-label>Last Name</ion-label>
+            <ion-input type="text" [(ngModel)]="data.user.lastname" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Campus ID</ion-label>
+            <ion-input type="text" [(ngModel)]="data.user.campusid" ></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>Campus Email</ion-label>
             <ion-input type="email" [(ngModel)]="data.user.email" ></ion-input>
             </ion-item>
         <ion-item>

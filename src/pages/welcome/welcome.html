@@ -1,10 +1,13 @@
 <ion-header>
     <ion-navbar>
-        <ion-title>Welcome!</ion-title>
+        <ion-title>SpeakUP!</ion-title>
     </ion-navbar>
 </ion-header>
 <ion-content>
     <ion-grid fixed>
+        <ion-row>
+            <p style="padding-right: 20px;">Welcome:</p><p id="DisplayName"></p>
+        </ion-row>
         <ion-row align-items-center>
             <ion-col col-12 col-md-6>
                 <button ion-button full (click)="goLoginPage()">Login</button>
@@ -12,9 +15,7 @@
             <ion-col>
                 <button ion-button full (click)="goSignUpPage()">Sign Up</button>
             </ion-col>
-            
         </ion-row>
-
         <ion-row> 
             <ion-col>
                 <button ion-button full (click)="goTestPage()">Testing Page</button>
