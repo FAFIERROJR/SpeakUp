@@ -14,6 +14,8 @@ import { NgForm } from '@angular/forms/src/directives/ng_form';
 })
 
 export class TestingPage{
+  @ViewChild('scrollMe') private commentsGrid: ElementRef;
+  disableScrollDown = false;
   uniqueKey: string;
   item: any;
   chatroomRef: any;
@@ -65,28 +67,42 @@ export class TestingPage{
     this.afdb.object('chatrooms/' + this.chatroomID + '/comments/' + this.uniqueKey).update({
       commentKey: this.uniqueKey
     })
-
+    
     //clear the input box using ngmodel
     this.data.input.content = '';
+    
+    this.disableScrollDown = false;
+    this.scrollToBottom();
   }
 
   /**
    * scroll to the latest message on the very bottom of the chat
    */
-  // ngOnInit(){
-  //   this.scrollToBottom();
-  //   console.log('ngOnInit ChatroomPage');
-  // }
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+  }
 
-  // ionViewDidLoad() {
-  //   console.log('ionViewDidLoad ChatroomPage');
-  // }
+  onScroll() {
+    let element = this.commentsGrid.nativeElement
+    let atBottom = element.scrollHeight - element.scrollTop === element.clientHeight
+    if (this.disableScrollDown && atBottom) {
+        this.disableScrollDown = false;
+    } else {
+        this.disableScrollDown = true;
+    }
+  }
+
+  scrollToBottom(): void{
+    if (this.disableScrollDown) {
+      return
+    }
+    else{
+      try {
+        this.commentsGrid.nativeElement.scrollTop = this.commentsGrid.nativeElement.scrollHeight;
+      } catch(err) { }
+    }
     
-  // scrollToBottom(): void {
-  //   try {
-  //       this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
-  //   } catch(err) { }                 
-  // }
+  }
 
 }
 
