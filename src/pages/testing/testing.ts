@@ -70,18 +70,22 @@ export class TestingPage{
     
     //clear the input box using ngmodel
     this.data.input.content = '';
-    
+
+    //change disablescrolldown to false to scroll down
     this.disableScrollDown = false;
     this.scrollToBottom();
   }
 
   /**
-   * scroll to the latest message on the very bottom of the chat
+   * scroll to the latest message on the very bottom of the chat on load
    */
   ngAfterViewChecked() {
     this.scrollToBottom();
   }
 
+  /**
+   * When scroll back to top 
+   */
   onScroll() {
     let element = this.commentsGrid.nativeElement
     let atBottom = element.scrollHeight - element.scrollTop === element.clientHeight
@@ -92,6 +96,9 @@ export class TestingPage{
     }
   }
 
+  /**
+   * scroll to bottom
+   */
   scrollToBottom(): void{
     if (this.disableScrollDown) {
       return
@@ -101,7 +108,6 @@ export class TestingPage{
         this.commentsGrid.nativeElement.scrollTop = this.commentsGrid.nativeElement.scrollHeight;
       } catch(err) { }
     }
-    
   }
 
 }
