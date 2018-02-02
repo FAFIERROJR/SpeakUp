@@ -28,15 +28,15 @@
         <comments #scrollMe chatroom="chatroomID"></comments>
       </ion-grid>
   </ion-row>
-
-  <ion-row id="CommentInputArea">
-    <form (ngSubmit)="send()">
-      <ion-input id="CommentInput" name="content" type="text" [(ngModel)]="data.input.content" placeholder="Type here..."></ion-input>
+  
+  <form (ngSubmit)="send()">
+    <ion-row id="CommentInputArea">
+      <ion-input name="content" type="text" [(ngModel)]="data.input.content" placeholder="Type here..."></ion-input>
       <button id="SendButton" ion-button float-right color='primary' type='submit'>
         <ion-icon ios="ios-send" md="md-send">
         </ion-icon>
       </button>
-    </form>             
-  </ion-row>
-
+    </ion-row>
+  </form>             
+  
   </ion-content>
