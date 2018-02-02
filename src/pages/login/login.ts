@@ -26,7 +26,7 @@ export class LoginPage{
         this.afAuth.auth.signInWithEmailAndPassword(
             this.data.user.email, this.data.user.password)
             .then((success)=> {
-                //grab the displayName of the user's acc. which is the the same as the "username"                
+                //grab the displayName of the user's acc. which is the the "first name and lastname" when the user signup              
                 this.username = this.afAuth.auth.currentUser.displayName;
                 //pass it as a params
                 this.navCtrl.push(WelcomePage, {'username': this.username});
