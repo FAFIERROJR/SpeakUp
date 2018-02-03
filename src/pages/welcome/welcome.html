@@ -1,12 +1,15 @@
 <ion-header>
     <ion-navbar>
-        <ion-title>SpeakUP!</ion-title>
+        <ion-title>SpeakUP! /**Admin**/</ion-title>
+        <ion-buttons end>
+            <button ion-button icon-only (click)="signOut()"><ion-icon ios="ios-log-out" md="md-log-out"></ion-icon></button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 <ion-content>
     <ion-grid fixed>
         <ion-row>
-            <p style="padding-right: 20px;">Welcome:</p><p id="DisplayName"></p>
+            <p style="padding-right: 20px;">Welcome:</p><p id="DisplayName">{{username}}</p>
         </ion-row>
         <ion-row align-items-center>
             <ion-col col-12 col-md-6>

@@ -30,6 +30,7 @@ export class SignUpPage{
         this.afAuth.auth.createUserWithEmailAndPassword(this.data.user.email, this.data.user.password)
         .then((success)=> {
             this.data.user.uid = this.afAuth.auth.currentUser.uid;
+            //make the user name the same as the firstname and lastname
             this.username = this.data.user.firstname + " " + this.data.user.lastname;
             //update the display with the firstname and lastname
             this.afAuth.auth.currentUser.updateProfile({

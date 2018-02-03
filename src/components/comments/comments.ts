@@ -45,6 +45,7 @@ export class CommentsComponent {
     this.chatroomID = this.navParams.get('chatroomID');
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
     this.comments = this.chatroomRef.valueChanges()
+    
   }
 
   /**
