@@ -40,6 +40,7 @@ export class TestingPage{
        this.chatroomRef = this.afdb.list('chatrooms/' + this.chatroomID + '/comments');
        this.username = navParams.get('username');
        this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time and stamp it
+       
     }
 
   /**
