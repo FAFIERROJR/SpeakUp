@@ -28,7 +28,7 @@ export class CommentsComponent {
   @Input() chatroomID: string;
   chatroomRef: any;
   uid: any;
-
+  isInstructor: boolean = false;
   constructor(public afDB:AngularFireDatabase, public navParams: NavParams, ) {
     this.i = 1;
   }
@@ -50,17 +50,20 @@ export class CommentsComponent {
     this.comments = this.chatroomRef.valueChanges();
 
     /**
-     * check if the user is an instructor
+     * check if the user is an instructor using the userProfile database and the id of the user logged on
+     * and change the value of occupation and if it contains 'instructor'.
+     * need to add the property manually in firebase. userProfile>[uid]> {occupation: 'instructor'}
      */
     this.uid = this.navParams.get('uid');
     console.log('chatroom: ' + this.uid);
     this.userOccupation = this.afDB.list('userProfile/' + this.uid).valueChanges().subscribe(data=>{
       if(data.indexOf('instructor') != -1){
-        console.log(data.indexOf('instructor') + ' is instructor');         
+        console.log(data.indexOf('instructor') + ' is instructor');
+        this.isInstructor = true;         
       }
       else{   
         console.log(data.indexOf('instructor') + ' not instructor');
-        (<HTMLElement>document.getElementById('commentDeleteBtn')).remove();
+        this.isInstructor = false;
       }
     });
   }
