@@ -17,10 +17,11 @@ import { AngularFireAuth } from 'angularfire2/auth';
 export class WelcomePage{
     username: any;
     data: any;
-
+    uid: any;
     constructor(public navCtrl:NavController, public navParams: NavParams, public afAuth:AngularFireAuth, public alertCtrl: AlertController){
         this.username = navParams.get('username');
-        
+        this.uid = navParams.get('uid');
+        console.log('welcome: ' + this.uid);
          if(this.username === undefined){
             //makes it easier to access the chatroom when developing, but need to login once. 
             this.username = "admin";
@@ -49,7 +50,7 @@ export class WelcomePage{
         //     this.navCtrl.push(TestingPage, {'chatroomID': 1, 'username': this.username})
         // }
         
-        this.navCtrl.push(TestingPage, {'chatroomID': 1, 'username': this.username})
+        this.navCtrl.push(TestingPage, {'chatroomID': 1, 'username': this.username, 'uid': this.uid})
         
     }
 

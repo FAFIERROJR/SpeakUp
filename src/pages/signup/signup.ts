@@ -10,6 +10,7 @@ import { WelcomePage } from '../welcome/welcome';
     templateUrl:'signup.html'
 })
 export class SignUpPage{
+    uid: any;
     data: any;
     username: any;
     makeUsername: string;
@@ -50,7 +51,8 @@ export class SignUpPage{
                     email: this.data.user.email
                 }
             });
-            this.navCtrl.push(WelcomePage, {'username': this.username});
+            this.navCtrl.push(WelcomePage, {'username': this.username, 'uid': this.data.user.uid});
+
         }).catch(
             (err)=>{
                 let alert = this.alertCtrl.create({

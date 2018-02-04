@@ -10,6 +10,7 @@ import { SignUpPage } from '../signup/signup';
     templateUrl: 'login.html'
 })
 export class LoginPage{
+    uid: any;
     data: any
     username: any;
     constructor(public navCtrl: NavController, public navParams: NavParams,
@@ -28,8 +29,10 @@ export class LoginPage{
             .then((success)=> {
                 //grab the displayName of the user's acc. which is the the "first name and lastname" when the user signup              
                 this.username = this.afAuth.auth.currentUser.displayName;
+                this.uid = this.afAuth.auth.currentUser.uid;
                 //pass it as a params
-                this.navCtrl.push(WelcomePage, {'username': this.username});
+                this.navCtrl.push(WelcomePage, {'username': this.username, 'uid': this.uid});
+                console.log('login: ' + this.uid);
             }).catch(
                 (err)=>{
                     let alert = this.alertCtrl.create(({
