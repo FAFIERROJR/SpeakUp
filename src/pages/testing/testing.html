@@ -29,7 +29,7 @@
       </ion-grid>
   </ion-row>
   
-  <form (ngSubmit)="send()">
+  <form (ngSubmit)="checkProfanity()">
     <ion-row id="CommentInputArea">
       <ion-input name="content" type="text" [(ngModel)]="data.input.content" placeholder="Type here..."></ion-input>
       <button id="SendButton" ion-button float-right color='primary' type='submit'>
