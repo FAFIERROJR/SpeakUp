@@ -29,7 +29,7 @@ export class TestingPage{
   userTime: any;
   arrayOfWords: Array<any>;
   doesNotContainProfanity: boolean;
-
+  uid: any;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public afAuth:AngularFireAuth,public afdb:AngularFireDatabase, public alertCtrl: AlertController){
@@ -43,10 +43,13 @@ export class TestingPage{
        this.chatroomRef = this.afdb.list('chatrooms/' + this.chatroomID + '/comments');
        this.username = navParams.get('username');
        this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time and stamp it
-       
+       this.uid = navParams.get('uid');
+
+       console.log('testing: ' + this.uid);
        //the array of bad words. 
-       this.arrayOfWords = ['test','hi','hello'];
+       this.arrayOfWords = ['fuck','shit','damn','bitch'];
        this.doesNotContainProfanity = true;
+
     }
 
   /**
@@ -77,7 +80,7 @@ export class TestingPage{
     })
     this.data.input.content = '';
     this.disableScrollDown = false;
-    this.scrollToBottom();
+    this.scrollToBottom();  
   }
 
   /**
@@ -127,16 +130,17 @@ export class TestingPage{
         }));
         alert.present();
         this.doesNotContainProfanity = false;
-        console.log(this.doesNotContainProfanity)
+        console.log(this.data.input.content.indexOf(this.arrayOfWords[i]));
         return;
       }
       else{
+        console.log(this.data.input.content.indexOf(this.arrayOfWords[i]));
+        
         this.doesNotContainProfanity = true;
       }
     }
 
      if(this.doesNotContainProfanity){
-       console.log(this.doesNotContainProfanity)
        this.send();
      }
   }

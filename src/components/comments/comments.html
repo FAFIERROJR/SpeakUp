@@ -11,7 +11,8 @@
         </p>
         <p>{{comment.content}}</p>
       </div>
-      <div id="{{comment.commentKey}}" col-md-1 float-right >
+      <div id="{{comment.commentKey}}" col-md-1 float-right>
+        <button ion-button small color="danger" class="smaller-button" (click)="removeComment($event, comment.commentKey)"><ion-icon class="icon-size2" ios="ios-trash" md="md-trash"></ion-icon></button>                
         <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
         <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
       </div>

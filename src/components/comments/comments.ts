@@ -15,16 +15,18 @@ import { query } from '@angular/core/src/animation/dsl';
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
+  userOccupation: AngularFireObject<{}>;
+  checkOccupation: AngularFireList<{}>;
   pointsElementTextContent: string;
   newPoints: any;
   commentPoints: any;
   commentID: any;
   i: any;
   data: any;
-  
   comments: Observable<any[]>;
   @Input() chatroomID: string;
   chatroomRef: any;
+  uid: any;
 
   constructor(public afDB:AngularFireDatabase, public navParams: NavParams, ) {
     this.i = 1;
@@ -44,8 +46,16 @@ export class CommentsComponent {
   ngOnInit(){
     this.chatroomID = this.navParams.get('chatroomID');
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
-    this.comments = this.chatroomRef.valueChanges()
-    
+    this.comments = this.chatroomRef.valueChanges();
+
+    this.uid = this.navParams.get('uid');
+    console.log('chatroom: ' + this.uid);
+    this.userOccupation = this.afDB.object('userProfile/' + this.uid)
+  }
+
+  removeComment(event, commentID){
+    //console.log(commentID);
+    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).remove();
   }
 
   /**
@@ -56,7 +66,7 @@ export class CommentsComponent {
    * @param pointDelta 1 or -1
    */
   vote(event, commentID, commentPoints, pointDelta){
-    console.log(commentID + " " + commentPoints + " " + pointDelta);
+    //console.log(commentID + " " + commentPoints + " " + pointDelta);
     /**
      * calculate new points
      */
