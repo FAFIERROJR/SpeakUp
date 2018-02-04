@@ -27,6 +27,9 @@ export class TestingPage{
   messageDate: any;
   userDate: any;
   userTime: any;
+  arrayOfWords: Array<any>;
+  doesNotContainProfanity: boolean;
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public afAuth:AngularFireAuth,public afdb:AngularFireDatabase, public alertCtrl: AlertController){
@@ -41,6 +44,9 @@ export class TestingPage{
        this.username = navParams.get('username');
        this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time and stamp it
        
+       //the array of bad words. 
+       this.arrayOfWords = ['test','hi','hello'];
+       this.doesNotContainProfanity = true;
     }
 
   /**
@@ -69,11 +75,7 @@ export class TestingPage{
     this.afdb.object('chatrooms/' + this.chatroomID + '/comments/' + this.uniqueKey).update({
       commentKey: this.uniqueKey
     })
-    
-    //clear the input box using ngmodel
     this.data.input.content = '';
-
-    //change disablescrolldown to false to scroll down
     this.disableScrollDown = false;
     this.scrollToBottom();
   }
@@ -112,6 +114,32 @@ export class TestingPage{
     }
   }
 
+  /**
+   * check the input with the array of words. if there is a match between the array of words and the input than alert, else let them send.
+   */
+  checkProfanity() {
+    for(var i = 0; i < this.arrayOfWords.length; i++){
+      if(this.data.input.content.indexOf(this.arrayOfWords[i]) != -1){
+        let alert = this.alertCtrl.create(({
+          title:'Profanity Alert',
+          subTitle: "Your comment contains profanity. Please remove it.",
+          buttons: ['Dismiss']
+        }));
+        alert.present();
+        this.doesNotContainProfanity = false;
+        console.log(this.doesNotContainProfanity)
+        return;
+      }
+      else{
+        this.doesNotContainProfanity = true;
+      }
+    }
+
+     if(this.doesNotContainProfanity){
+       console.log(this.doesNotContainProfanity)
+       this.send();
+     }
+  }
   /**
    * signout
    */
