@@ -51,7 +51,7 @@ export class SignUpPage{
                     email: this.data.user.email
                 }
             });
-            this.navCtrl.push(WelcomePage, {'username': this.username, 'uid': this.uid});
+            this.navCtrl.push(WelcomePage, {'username': this.username, 'uid': this.data.user.uid});
 
         }).catch(
             (err)=>{

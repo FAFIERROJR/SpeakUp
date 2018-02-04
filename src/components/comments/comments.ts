@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import {AngularFireDatabase, AngularFireObject, AngularFireList} from 'angularfire2/database';
-import {Observable} from 'rxjs';
+import {Observable, Subscription} from 'rxjs';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
 import { query } from '@angular/core/src/animation/dsl';
 
@@ -15,7 +15,8 @@ import { query } from '@angular/core/src/animation/dsl';
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
-  userOccupation: AngularFireObject<{}>;
+  userOccupation: Subscription;
+ 
   checkOccupation: AngularFireList<{}>;
   pointsElementTextContent: string;
   newPoints: any;
@@ -48,9 +49,20 @@ export class CommentsComponent {
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
     this.comments = this.chatroomRef.valueChanges();
 
+    /**
+     * check if the user is an instructor
+     */
     this.uid = this.navParams.get('uid');
     console.log('chatroom: ' + this.uid);
-    this.userOccupation = this.afDB.object('userProfile/' + this.uid)
+    this.userOccupation = this.afDB.list('userProfile/' + this.uid).valueChanges().subscribe(data=>{
+      if(data.indexOf('instructor') != -1){
+        console.log(data.indexOf('instructor') + ' is instructor');         
+      }
+      else{   
+        console.log(data.indexOf('instructor') + ' not instructor');
+        (<HTMLElement>document.getElementById('commentDeleteBtn')).remove();
+      }
+    });
   }
 
   removeComment(event, commentID){
