@@ -1,8 +1,8 @@
 <ion-list>
   <div ion-item text-wrap *ngFor="let comment of comments | async"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
     <ion-row>
-      <div col-md-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      
-      <div col-xl-10 ol-lg-10 col-md-10>
+      <div col-lg-1 col-md-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      
+      <div col-lg-9 col-md-10>
         <p>
           <span class="comment-username">{{comment.username}}:</span>
           <span class="comment-time">{{comment.user_time}}</span>
@@ -11,10 +11,10 @@
         </p>
         <p>{{comment.content}}</p>
       </div>
-      <div id="{{comment.commentKey}}" col-md-1 float-right>
-        <button *ngIf="isInstructor" ion-button small color="danger" class="smaller-button" (click)="removeComment($event, comment.commentKey)"><ion-icon class="icon-size2" ios="ios-trash" md="md-trash"></ion-icon></button>                
+      <div id="{{comment.commentKey}}" col-lg-2 col-md-1 float-right>
         <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
         <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
+        <button *ngIf="isInstructor" ion-button small color="danger" class="smaller-button" (click)="removeComment($event, comment.commentKey)"><ion-icon class="icon-size2" ios="ios-trash" md="md-trash"></ion-icon></button>                        
       </div>
   </ion-row>
   </div>
