@@ -15,6 +15,7 @@ import { WelcomePage } from '../welcome/welcome';
 })
 
 export class TestingPage{
+  randomTempID: any;
   @ViewChild('scrollMe') private commentsGrid: ElementRef;
   disableScrollDown = false;
   uniqueKey: string;
@@ -44,12 +45,13 @@ export class TestingPage{
        this.username = navParams.get('username');
        this.serverTime = firebase.database.ServerValue.TIMESTAMP; //get the firebase server time and stamp it
        this.uid = navParams.get('uid');
-
+       this.randomTempID = navParams.get('randomTempID');
+       
        console.log('testing: ' + this.uid);
        //the array of bad words. 
        this.arrayOfWords = ['fuck','shit','damn','bitch'];
        this.doesNotContainProfanity = true;
-
+       
     }
 
   /**
@@ -68,7 +70,9 @@ export class TestingPage{
       server_time: this.serverTime, //the firebase's server time
       user_date: this.userDate, //user's system's date
       user_time: this.userTime, //user's system's time
-      points: 0
+      points: 0,
+      random_temp_id: this.randomTempID
+
     };
 
     //obtain the key when the new comment is push
@@ -78,6 +82,7 @@ export class TestingPage{
     this.afdb.object('chatrooms/' + this.chatroomID + '/comments/' + this.uniqueKey).update({
       commentKey: this.uniqueKey
     })
+    
     this.data.input.content = '';
     this.disableScrollDown = false;
     this.scrollToBottom();  

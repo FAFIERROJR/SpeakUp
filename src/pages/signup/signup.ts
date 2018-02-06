@@ -10,6 +10,7 @@ import { WelcomePage } from '../welcome/welcome';
     templateUrl:'signup.html'
 })
 export class SignUpPage{
+    randomTempID: any;
     uid: any;
     data: any;
     username: any;
@@ -26,6 +27,7 @@ export class SignUpPage{
                 password:''
             }
         }
+        this.randomTempID = Math.floor((Math.random()*10)+1);
     }
     signUp(){
         this.afAuth.auth.createUserWithEmailAndPassword(this.data.user.email, this.data.user.password)
@@ -51,7 +53,7 @@ export class SignUpPage{
                     email: this.data.user.email
                 }
             });
-            this.navCtrl.push(WelcomePage, {'username': this.username, 'uid': this.data.user.uid});
+            this.navCtrl.push(WelcomePage, {'username': this.username, 'uid': this.data.user.uid, 'randomTempID': this.randomTempID});
 
         }).catch(
             (err)=>{
