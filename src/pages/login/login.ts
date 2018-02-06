@@ -13,6 +13,8 @@ export class LoginPage{
     uid: any;
     data: any
     username: any;
+    randomTempID: any;
+
     constructor(public navCtrl: NavController, public navParams: NavParams,
          public afAuth:AngularFireAuth, public alertCtrl: AlertController){
              this.data = {
@@ -21,6 +23,8 @@ export class LoginPage{
                     password: ''
                 }
             }
+
+            this.randomTempID = Math.floor((Math.random()*10)+1);
     }
 
     login(){
@@ -31,7 +35,7 @@ export class LoginPage{
                 this.username = this.afAuth.auth.currentUser.displayName;
                 this.uid = this.afAuth.auth.currentUser.uid;
                 //pass it as a params
-                this.navCtrl.push(WelcomePage, {'username': this.username, 'uid': this.uid});
+                this.navCtrl.push(WelcomePage, {'username': this.username, 'uid': this.uid, 'randomTempID': this.randomTempID});
                 console.log('login: ' + this.uid);
             }).catch(
                 (err)=>{

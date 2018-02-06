@@ -5,7 +5,7 @@
       <div col-lg-9 col-md-10>
         <p>
           <span class="comment-username" *ngIf="isInstructor">{{comment.username}}:</span>
-          <span class="comment-username" *ngIf="!isInstructor">Anonymous:</span>
+          <span class="comment-username" *ngIf="!isInstructor">Anonymous{{comment.random_temp_id}}:</span>
           <span class="comment-time">{{comment.user_time}}</span>
           <span class="comment-date">{{comment.user_date}}</span>
           <span id="{{comment.commentKey}}_points" float-right>{{comment.points}}<span class="tiny-text-size">pts</span></span>
