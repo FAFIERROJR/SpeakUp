@@ -9,6 +9,7 @@ import { ChatroomPage } from '../chatroom/chatroom';
 import { PARAMETERS } from '@angular/core/src/util/decorators';
 import { NewPage } from '../new/new';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { Signup2Page } from '../signup2/signup2';
 
 @Component({
     selector: 'page-Welcome',
@@ -78,6 +79,10 @@ export class WelcomePage{
 
     goNewPage(){
         this.navCtrl.push(NewPage);
+    }
+
+    goSignup2Page(){
+        this.navCtrl.push(Signup2Page);
     }
 
     signOut(): void {
