@@ -1,22 +1,37 @@
-<ion-list>
-  <div ion-item text-wrap *ngFor="let comment of comments | async"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
-    <ion-row>
-      <div col-lg-1 col-md-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      
-      <div col-lg-9 col-md-10>
-        <p>
-          <span class="comment-username" *ngIf="isInstructor">{{comment.username}}:</span>
-          <span class="comment-username" *ngIf="!isInstructor">Anonymous{{comment.random_temp_id}}:</span>
-          <span class="comment-time">{{comment.user_time}}</span>
-          <span class="comment-date">{{comment.user_date}}</span>
-          <span id="{{comment.commentKey}}_points" float-right>{{comment.points}}<span class="tiny-text-size">pts</span></span>
-        </p>
-        <p>{{comment.content}}</p>
-      </div>
-      <div id="{{comment.commentKey}}" col-lg-2 col-md-1 float-right>
-        <button float-right *ngIf="isInstructor" ion-button small color="danger" class="smaller-button" (click)="removeComment($event, comment.commentKey)"><ion-icon class="icon-size2" ios="ios-trash" md="md-trash"></ion-icon></button>                                
-        <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
-        <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
-      </div>
-  </ion-row>
+<ion-content class="comment-area" >
+  <div #commentlist style="overflow-y: scroll; height:100%;">
+    <div ion-item text-wrap *ngFor="let comment of comments | async"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
+      <ion-row>
+        <div col-lg-1 col-md-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      
+        <div col-lg-9 col-md-10>
+          <p>
+            <span class="comment-username" *ngIf="isInstructor">{{comment.username}}:</span>
+            <span class="comment-username" *ngIf="!isInstructor">Anonymous{{comment.random_temp_id}}:</span>
+            <span class="comment-time">{{comment.user_time}}</span>
+            <span class="comment-date">{{comment.user_date}}</span>
+            <span id="{{comment.commentKey}}_points" float-right>{{comment.points}}<span class="tiny-text-size">pts</span></span>
+          </p>
+          <p>{{comment.content}}</p>
+        </div>
+        <div id="{{comment.commentKey}}" col-lg-2 col-md-1 float-right>
+          <button float-right *ngIf="isInstructor" ion-button small color="danger" class="smaller-button" (click)="removeComment($event, comment.commentKey)"><ion-icon class="icon-size2" ios="ios-trash" md="md-trash"></ion-icon></button>                                
+          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
+          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
+        </div>
+    </ion-row>
+    </div>
   </div>
-</ion-list>
+<!-- templete -->
+  <!-- <ion-list>
+    <ion-item *ngFor="let i of items">{{i}}</ion-item>
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll> -->
+
+</ion-content>
+
+

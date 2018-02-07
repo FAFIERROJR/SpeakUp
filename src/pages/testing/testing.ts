@@ -16,8 +16,6 @@ import { WelcomePage } from '../welcome/welcome';
 
 export class TestingPage{
   randomTempID: any;
-  @ViewChild('scrollMe') private commentsGrid: ElementRef;
-  disableScrollDown = false;
   uniqueKey: string;
   item: any;
   chatroomRef: any;
@@ -84,43 +82,10 @@ export class TestingPage{
     })
     
     this.data.input.content = '';
-    this.disableScrollDown = false;
-    this.scrollToBottom();  
+   
   }
 
-  /**
-   * scroll to the latest message on the very bottom of the chat on load
-   */
-  ngAfterViewChecked() {
-    this.scrollToBottom();
-  }
-
-  /**
-   * When scroll back to top 
-   */
-  onScroll() {
-    let element = this.commentsGrid.nativeElement
-    let atBottom = element.scrollHeight - element.scrollTop === element.clientHeight
-    if (this.disableScrollDown && atBottom) {
-        this.disableScrollDown = false;
-    } else {
-        this.disableScrollDown = true;
-    }
-  }
-
-  /**
-   * scroll to bottom
-   */
-  scrollToBottom(): void{
-    if (this.disableScrollDown) {
-      return
-    }
-    else{
-      try {
-        this.commentsGrid.nativeElement.scrollTop = this.commentsGrid.nativeElement.scrollHeight;
-      } catch(err) { }
-    }
-  }
+  
 
   /**
    * check the input with the array of words. if there is a match between the array of words and the input than alert, else let them send.
