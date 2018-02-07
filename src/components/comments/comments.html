@@ -1,5 +1,5 @@
 <ion-content class="comment-area" >
-  <div #commentlist style="overflow-y: scroll; height:100%;">
+  <div #commentlist (scroll)="onScroll()" style="overflow-y: scroll; height:100%;">
     <div ion-item text-wrap *ngFor="let comment of comments | async"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
       <ion-row>
         <div col-lg-1 col-md-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      

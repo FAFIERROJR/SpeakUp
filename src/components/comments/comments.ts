@@ -97,6 +97,12 @@ export class CommentsComponent {
     this.scrollToBottom();
   }
 
+  onScroll(){
+    if(this.commentlist.nativeElement.scrollTop === 0){
+      console.log('scrolled to top');
+    }
+  }
+
   removeComment(event, commentID){
     //console.log(commentID);
     this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).remove();
