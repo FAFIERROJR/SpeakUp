@@ -4,7 +4,7 @@ page-testing {
         left: 0;
         right: 0;
         height: 100vh;
-        overflow-y: none;
+       
     }
 
     ion-title {
@@ -21,14 +21,8 @@ page-testing {
         background-color: white;
     }
     
-    #CommentsArea{
-        position: absolute;
-        top: 20px;
-        width: 100%;
-        height: 87%;
-        overflow-y: scroll;
-        border: 1px solid blue;
-        border-radius: 4px;
+    .comment-area{
+ 
     }
   
 }

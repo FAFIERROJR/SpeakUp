@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild, ViewChildren, ElementRef } from '@angular/core';
 import {AngularFireDatabase, AngularFireObject, AngularFireList} from 'angularfire2/database';
 import {Observable, Subscription} from 'rxjs';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
 import { query } from '@angular/core/src/animation/dsl';
+import { Element } from '@angular/compiler';
 
 /**
  * Generated class for the CommentsComponent component.
@@ -16,7 +17,8 @@ import { query } from '@angular/core/src/animation/dsl';
 })
 export class CommentsComponent { 
   userOccupation: Subscription;
- 
+  @ViewChildren('comments') private commentsItem: ElementRef;
+  @ViewChild('commentlist') private commentlist: ElementRef;
   checkOccupation: AngularFireList<{}>;
   pointsElementTextContent: string;
   newPoints: any;
@@ -24,14 +26,30 @@ export class CommentsComponent {
   commentID: any;
   i: any;
   data: any;
-  comments: Observable<any[]>;
+  comments: any;
   @Input() chatroomID: string;
   chatroomRef: any;
   uid: any;
   isInstructor: boolean = false;
+  items = [];
+  username: any;
   constructor(public afDB:AngularFireDatabase, public navParams: NavParams, ) {
     this.i = 1;
+
   }
+  // //pull from database each time, list?
+  // doInfinite(infiniteScroll) {
+  //   console.log('Begin async operation');
+
+  //   setTimeout(() => {
+  //     for (let i = 0; i < 20; i++) {
+  //       this.items.push( this.items.length );
+  //     }
+
+  //     console.log('Async operation has ended');
+  //     infiniteScroll.complete();
+  //   }, 2000);
+  // }
   
   /**
    * this method is for testing and logging the id of the parent of the element that was clicked
@@ -46,8 +64,18 @@ export class CommentsComponent {
    */
   ngOnInit(){
     this.chatroomID = this.navParams.get('chatroomID');
-    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
+    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+      let q = ref.orderByKey().limitToLast(10);
+      let key = ref.endAt(11);
+      console.log(key);
+      return q;
+    });
     this.comments = this.chatroomRef.valueChanges();
+
+    this.chatroomRef.valueChanges().subscribe(data=>{
+      this.scrollToBottom(); 
+      console.log('new message ');
+    });
 
     /**
      * check if the user is an instructor using the userProfile database and the id of the user logged on
@@ -59,7 +87,8 @@ export class CommentsComponent {
     this.userOccupation = this.afDB.list('userProfile/' + this.uid).valueChanges().subscribe(data=>{
       if(data.indexOf('instructor') != -1){
         console.log(data.indexOf('instructor') + ' is instructor');
-        this.isInstructor = true;         
+        this.isInstructor = true; 
+            
       }
       else{   
         console.log(data.indexOf('instructor') + ' not instructor');
@@ -68,9 +97,21 @@ export class CommentsComponent {
     });
   }
 
+  ngOnViewChecked(){
+    this.scrollToBottom();
+  }
+
+  onScroll(){
+    if(this.commentlist.nativeElement.scrollTop === 0){
+      console.log('scrolled to top');
+    }
+  }
+
   removeComment(event, commentID){
     //console.log(commentID);
-    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).remove();
+    if(this.isInstructor){
+      this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).remove();
+    }
   }
 
   /**
@@ -94,5 +135,18 @@ export class CommentsComponent {
     this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
       points: newPoints
     }); 
+  }
+
+  /**
+   * scroll to bottom
+   */
+  scrollToBottom(): void{
+    try{
+      this.commentlist.nativeElement.scrollTop = this.commentlist.nativeElement.scrollHeight;
+      console.log('scrolltobottom: ');
+    }
+    catch(err){
+      console.log('did not scrolltobottom: ' + err);
+    }
   }
 }
