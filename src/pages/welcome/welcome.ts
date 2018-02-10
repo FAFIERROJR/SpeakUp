@@ -73,7 +73,7 @@ export class WelcomePage{
             alert.present();
         }
         else{
-            this.navCtrl.push(ChatroomPage, {'chatroomID': 0});
+            this.navCtrl.push(ChatroomPage, {'chatroomID': 0, 'username': this.username, 'uid': this.uid, 'randomTempID': this.randomTempID});
         }
     }
 
