@@ -32,4 +32,13 @@ comments {
         font-size: 10px;
         padding-left: 3px;
     }
+    .comment-area{
+        position: absolute;
+        top: 10px;
+        width: 100%;
+        height: 87%;
+        border: 1px solid blue;
+        border-radius: 5px;
+        
+    }
 }
