@@ -15,8 +15,8 @@
         </div>
         <div id="{{comment.commentKey}}" col-lg-2 col-md-1 float-right>
           <button float-right *ngIf="isInstructor" ion-button small color="danger" class="smaller-button" (click)="removeComment($event, comment.commentKey)"><ion-icon class="icon-size2" ios="ios-trash" md="md-trash"></ion-icon></button>                                
-          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
-          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
+          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)" [style.color]="detBtnColor(comment.vote_history, 1)" ><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
+          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)" [style.color]="detBtnColor(comment.vote_history, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
         </div>
     </ion-row>
     </div>

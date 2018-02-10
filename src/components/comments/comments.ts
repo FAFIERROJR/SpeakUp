@@ -80,11 +80,14 @@ export class CommentsComponent {
     this.comments = this.chatroomRef.valueChanges();
     this.chatroomRef.valueChanges().subscribe(data =>{
       for(let comment of data){
+        console.log('comment: ' + comment);
         for(let vote_history of comment){
+          console.log('vote_history:' + vote_history);
           for(let vote of vote_history){
+            console.log(vote)
             if(vote.indexOf(this.uid) != -1){
-              console.log(vote)
               this.comment_votes.push({
+                vid: vote.vid,
                 commentKey : comment.commentKey,
                 vote: vote.value
               });
@@ -92,6 +95,7 @@ export class CommentsComponent {
           }
         }
       }
+      console.log('initial comment_votes: ' + this.comment_votes);
     });
 
     this.chatroomRef.valueChanges().subscribe(data=>{
@@ -148,15 +152,17 @@ export class CommentsComponent {
     let commentKey = null;
     let newPoints = 0;
     if(this.comment_votes != null){
+      console.log(this.comment_votes);
       for(let voteKey in this.comment_votes){
-        console.log("voteKey: " + voteKey + "\ncomment_vote.uid:  " + this.comment_votes[voteKey].uid +
+        console.log("commentID" + commentID + "voteKey: " + voteKey + "\ncomment_vote.commentKey:  " + this.comment_votes[voteKey].commentKey+
           "\ncurrent_user.uid: " + this.uid + "\ncomment_vote.value: " + this.comment_votes[voteKey].value +
           "\npointDelta: " + pointDelta );
         if(this.comment_votes[voteKey].commentKey == commentID && this.comment_votes[voteKey].value == pointDelta){
           voted = true;
-          this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').remove(commentID);
+          this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').remove(this.comment_votes[voteKey].vid);
           newPoints = commentPoints + pointDelta * -1;
-          let indexOfToRemove = this.comment_votes.indexOf({'commentKey': commentID});
+          let indexOfToRemove = this.comment_votes.indexOf({commentKey: commentID, value: pointDelta}, 0);
+          console.log('indexOfToRemove: ' + indexOfToRemove);
           this.comment_votes.splice(indexOfToRemove, 1);
 
         }
@@ -166,7 +172,7 @@ export class CommentsComponent {
           oldVote.uid = this.uid;
           oldVote.value = pointDelta;
           newPoints = commentPoints + pointDelta * 2;
-          this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').update(commentID, oldVote);
+          this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').update(this.comment_votes[voteKey].vid, oldVote);
           this.comment_votes[voteKey].value = pointDelta;
 
         }
@@ -187,12 +193,14 @@ export class CommentsComponent {
       let newVote = new Vote();
       newVote.uid = this.uid;
       newVote.value = pointDelta;
-      this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').push(newVote);
+      let vote_id = this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').push(newVote).key;
+      this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history/').update(vote_id, {vid: vote_id });
 
       /**
        * update comments_vote
        */
       this.comment_votes.push({
+        vid: vote_id,
         commentKey: commentID,
         value: pointDelta
       })
@@ -216,6 +224,30 @@ export class CommentsComponent {
     }
     catch(err){
       console.log('did not scrolltobottom: ' + err);
+    }
+  }
+
+  detBtnColor(vote_history: Array<any> , btnValue){
+    console.log(vote_history);
+    if(vote_history != null){
+      let commentValue = null
+      for(let vote_key in vote_history){
+        if(vote_history[vote_key].uid == this.uid ){
+          commentValue = vote_history[vote_key].value;
+        }
+      }
+      console.log('commentValue: ' + commentValue + ' bntValue: ' + btnValue);
+      if(commentValue != null){
+        if(btnValue == 1 && commentValue == 1){
+        return 'orange';
+        }
+        else if(btnValue == -1 && commentValue == -1){
+          return 'purple';
+        }
+      }
+    }
+    else{
+      return 'white';
     }
   }
 }
