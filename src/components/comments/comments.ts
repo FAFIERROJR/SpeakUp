@@ -1,9 +1,15 @@
 import { Component, Input, ViewChild, ViewChildren, ElementRef } from '@angular/core';
 import {AngularFireDatabase, AngularFireObject, AngularFireList} from 'angularfire2/database';
-import {Observable, Subscription} from 'rxjs';
+import {Subscription} from 'rxjs';
 import { NavParams } from 'ionic-angular/navigation/nav-params';
 import { query } from '@angular/core/src/animation/dsl';
 import { Element } from '@angular/compiler';
+import { merge } from 'rxjs/operator/merge';
+import * as _ from 'lodash';
+import {Observable} from 'rxjs/Rx'
+import { of } from 'rxjs/observable/of';
+import { concat } from 'rxjs/observable/concat';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 
 /**
  * Generated class for the CommentsComponent component.
@@ -16,6 +22,15 @@ import { Element } from '@angular/compiler';
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
+  nextBatch: any;
+  batch1: any;
+  totalBatch: any;
+  a: Observable<{}>;
+  thisBatch = new BehaviorSubject([]);
+  batchA = new BehaviorSubject([]);
+  knownKey: any;
+  knownKeyArray: any[];
+  firstKnownKey: any;
   userOccupation: Subscription;
   @ViewChildren('comments') private commentsItem: ElementRef;
   @ViewChild('commentlist') private commentlist: ElementRef;
@@ -26,16 +41,15 @@ export class CommentsComponent {
   commentID: any;
   i: any;
   data: any;
-  comments: any;
+  comments = new BehaviorSubject([]);
   @Input() chatroomID: string;
   chatroomRef: any;
   uid: any;
   isInstructor: boolean = false;
-  items = [];
   username: any;
+
   constructor(public afDB:AngularFireDatabase, public navParams: NavParams, ) {
     this.i = 1;
-
   }
   // //pull from database each time, list?
   // doInfinite(infiniteScroll) {
@@ -64,18 +78,36 @@ export class CommentsComponent {
    */
   ngOnInit(){
     this.chatroomID = this.navParams.get('chatroomID');
-    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
-      let q = ref.orderByKey().limitToLast(10);
-      let key = ref.endAt(11);
-      console.log(key);
-      return q;
-    });
-    this.comments = this.chatroomRef.valueChanges();
-
+    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
     this.chatroomRef.valueChanges().subscribe(data=>{
       this.scrollToBottom(); 
       console.log('new message ');
     });
+  
+
+    this.knownKeyArray = [];
+    let q,k;
+    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+      q = ref.orderByKey().limitToLast(10);
+      k = ref.orderByKey().limitToLast(11);
+      k.once('value', (snapshot)=>{
+        snapshot.forEach((childSnapShot): any =>{
+          this.knownKey = childSnapShot.key;
+          this.knownKeyArray.push(this.knownKey);
+        })
+        this.firstKnownKey = this.knownKeyArray[0];
+          console.log(this.firstKnownKey);
+      })
+      return q;
+    });
+    this.batchA = this.chatroomRef.valueChanges();
+    this.comments = this.batchA;
+
+    this.batchA.subscribe((data:any)=>{
+      this.nextBatch = data;
+      console.log(this.nextBatch);
+    });
+
 
     /**
      * check if the user is an instructor using the userProfile database and the id of the user logged on
@@ -97,6 +129,31 @@ export class CommentsComponent {
     });
   }
 
+  getComments(storedKey, oldBatch){
+    this.knownKeyArray = [];
+    let q,k;
+    let Aarr;
+    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+      q = ref.orderByKey().endAt(storedKey).limitToLast(10);
+      k = ref.orderByKey().endAt(storedKey).limitToLast(11);  
+      k.once('value', (snapshot)=>{
+        snapshot.forEach((childSnapShot): any =>{
+          this.knownKey = childSnapShot.key;
+          this.knownKeyArray.push(this.knownKey);
+        })
+        this.firstKnownKey = this.knownKeyArray[0];
+          console.log(this.firstKnownKey);
+      })
+      return q;
+    });
+    this.chatroomRef.valueChanges().subscribe(batch2 =>{
+        this.nextBatch = batch2.concat(oldBatch);
+    });
+    console.log(this.nextBatch)
+  }
+
+
+  
   ngOnViewChecked(){
     this.scrollToBottom();
   }
@@ -104,6 +161,7 @@ export class CommentsComponent {
   onScroll(){
     if(this.commentlist.nativeElement.scrollTop === 0){
       console.log('scrolled to top');
+      this.getComments(this.firstKnownKey, this.nextBatch);
     }
   }
 
