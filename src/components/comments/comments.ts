@@ -84,7 +84,6 @@ export class CommentsComponent {
       console.log('new message ');
     });
   
-
     this.knownKeyArray = [];
     let q,k;
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
@@ -127,7 +126,7 @@ export class CommentsComponent {
     });
   }
 
-  getComments(storedKey, oldBatch){
+  getComments(storedKey,lastKey, oldBatch){
     console.log("oldbatch ",oldBatch);
     let q,k;
     let Aarr;
@@ -148,23 +147,26 @@ export class CommentsComponent {
 
     this.chatroomRef.valueChanges().subscribe(nextBatch =>{
       console.log("next batch", nextBatch);
-      this.comments = Array.prototype.concat(nextBatch, oldBatch);
-      console.log("display: ", this.comments)  
+      if(this.firstKnownKey === lastKey){
+        console.log('end');
+      }
+      else{
+        this.comments = Array.prototype.concat(nextBatch, oldBatch);
+        this.commentlist.nativeElement.scrollTop = (this.commentlist.nativeElement.scrollHeight)* 0.20 ;   
+      }
     });
   }
 
 onScroll(){
     if(this.commentlist.nativeElement.scrollTop === 0){
       console.log('scrolled to top');
-      this.getComments(this.firstKnownKey, this.comments);
+      this.getComments(this.firstKnownKey, this.firstKnownKey,this.comments);
     }
   }
   
   ngOnViewChecked(){
     this.scrollToBottom();
   }
-
-  
 
   removeComment(event, commentID){
     //console.log(commentID);
