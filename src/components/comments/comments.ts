@@ -22,12 +22,12 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject'
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
-  nextBatch: any;
+  displayBatch: any;
   batch1: any;
   totalBatch: any;
   a: Observable<{}>;
-  thisBatch = new BehaviorSubject([]);
-  batchA = new BehaviorSubject([]);
+  thisBatch: any;
+  batchA: any;
   knownKey: any;
   knownKeyArray: any[];
   firstKnownKey: any;
@@ -41,7 +41,7 @@ export class CommentsComponent {
   commentID: any;
   i: any;
   data: any;
-  comments = new BehaviorSubject([]);
+  comments = [];
   @Input() chatroomID: string;
   chatroomRef: any;
   uid: any;
@@ -101,13 +101,11 @@ export class CommentsComponent {
       return q;
     });
     this.batchA = this.chatroomRef.valueChanges();
-    this.comments = this.batchA;
-
-    this.batchA.subscribe((data:any)=>{
-      this.nextBatch = data;
-      console.log(this.nextBatch);
+    this.batchA.subscribe(data=>{
+      this.comments = data;
+      console.log("onInit display:", this.comments);
     });
-
+    
 
     /**
      * check if the user is an instructor using the userProfile database and the id of the user logged on
@@ -130,9 +128,10 @@ export class CommentsComponent {
   }
 
   getComments(storedKey, oldBatch){
-    this.knownKeyArray = [];
+    console.log("oldbatch ",oldBatch);
     let q,k;
     let Aarr;
+    this.knownKeyArray = [];
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
       q = ref.orderByKey().endAt(storedKey).limitToLast(10);
       k = ref.orderByKey().endAt(storedKey).limitToLast(11);  
@@ -142,28 +141,30 @@ export class CommentsComponent {
           this.knownKeyArray.push(this.knownKey);
         })
         this.firstKnownKey = this.knownKeyArray[0];
-          console.log(this.firstKnownKey);
+        console.log(this.firstKnownKey);
       })
       return q;
     });
-    this.chatroomRef.valueChanges().subscribe(batch2 =>{
-        this.nextBatch = batch2.concat(oldBatch);
+
+    this.chatroomRef.valueChanges().subscribe(nextBatch =>{
+      console.log("next batch", nextBatch);
+      this.comments = Array.prototype.concat(nextBatch, oldBatch);
+      console.log("display: ", this.comments)  
     });
-    console.log(this.nextBatch)
   }
 
-
+onScroll(){
+    if(this.commentlist.nativeElement.scrollTop === 0){
+      console.log('scrolled to top');
+      this.getComments(this.firstKnownKey, this.comments);
+    }
+  }
   
   ngOnViewChecked(){
     this.scrollToBottom();
   }
 
-  onScroll(){
-    if(this.commentlist.nativeElement.scrollTop === 0){
-      console.log('scrolled to top');
-      this.getComments(this.firstKnownKey, this.nextBatch);
-    }
-  }
+  
 
   removeComment(event, commentID){
     //console.log(commentID);
