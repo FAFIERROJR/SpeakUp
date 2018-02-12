@@ -120,7 +120,7 @@ export class TestingPage{
   signOut(): void {
     this.afAuth.auth.signOut();
     this.navCtrl.push(WelcomePage);
-}
+  }
 
 }
 
