@@ -11,6 +11,9 @@ import { of } from 'rxjs/observable/of';
 import { concat } from 'rxjs/observable/concat';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject'
 import { map } from 'rxjs/operator/map';
+import {AngularFireAuth} from 'angularfire2/auth'
+import { Comment } from '../../app/comment';
+import { Vote } from '../../models/vote';
 
 /**
  * Generated class for the CommentsComponent component.
@@ -42,6 +45,11 @@ export class CommentsComponent {
   isInstructor: boolean = false;
   username: any;
   retrievable: boolean = false;
+  @ViewChild('commentlist') private commentlist: ElementRef;
+  pointsElementTextContent: string;
+  items = [];
+  comment_votes: Array<any>;
+
 
   constructor(public afDB:AngularFireDatabase, public navParams: NavParams, ) {
     this.chatroomID = this.navParams.get('chatroomID');
@@ -75,6 +83,26 @@ export class CommentsComponent {
       return q;
     });
     
+    this.chatroomRef.valueChanges().subscribe(data =>{
+      for(let comment of data){
+        console.log('comment: ' + comment);
+        for(let vote_history of comment){
+          console.log('vote_history:' + vote_history);
+          for(let vote of vote_history){
+            console.log(vote)
+            if(vote.indexOf(this.uid) != -1){
+              this.comment_votes.push({
+                vid: vote.vid,
+                commentKey : comment.commentKey,
+                vote: vote.value
+              });
+            }
+          }
+        }
+      }
+      console.log('initial comment_votes: ' + this.comment_votes);
+    });
+
     this.batchA = this.chatroomRef.valueChanges();
     this.batchA.subscribe((data: any[])=>{ //subscribe; the data becomes an array
       this.comments = data;
