@@ -23,6 +23,7 @@ import { map } from 'rxjs/operator/map';
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
+  databaselength: number;
   chatroomComments: number;
   batchA: any;
   knownKey: any;
@@ -58,7 +59,7 @@ export class CommentsComponent {
    * when comments are init, intialize these
    */
   ngOnInit(){
-    this.checkIfDBhasNumberofItems();
+    this.checkDataBaseInfo();
     this.knownKeyArray = [];//empty array to store keys 
     let q,k;
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
@@ -101,15 +102,14 @@ export class CommentsComponent {
     
   }
 
-  checkIfDBhasNumberofItems(){
+  checkDataBaseInfo(){
     let i;
     let chatRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments').valueChanges();
     chatRef.subscribe((data:any[])=>{
-      console.log(data[0]);
       if(data.length >= 11){
         this.retrievable = true;
       }
-      console.log(data.length)
+      this.databaselength = data.length;
     });
   }
   /**
@@ -120,8 +120,7 @@ export class CommentsComponent {
    */
   getComments(storedKey, oldBatch){
     try{
-      console.log('storedkey1',storedKey);
-      let q,k,m; //query items
+      let q,k,m; //query items      
       this.knownKeyArray = [];//initailize empty array to store the comment keys
 
       if(storedKey === undefined || storedKey === null){
@@ -166,7 +165,7 @@ export class CommentsComponent {
           //mapping the commentkeys to compare them to each other to know when the end of the database is   
           let mapNextBatch = nextBatch.map(array => array.commentKey);  
           // if the firstknownkey matches the nextbatch's first key, that means we've retrieved everything from the database
-          if(this.firstKnownKey === mapNextBatch[0]){
+          if(this.comments.length === this.databaselength){
             console.log('end');
             this.retrievable = false;
           }
