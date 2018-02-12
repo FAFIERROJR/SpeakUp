@@ -1,14 +1,6 @@
 <ion-content class="comment-area" >
-
-    <ion-infinite-scroll position="top" *ngIf="retrievable" (ionInfinite)="doInfinite($event)">
-        <ion-infinite-scroll-content
-          loadingSpinner="bubbles"
-          loadingText="Loading more data...">
-        </ion-infinite-scroll-content>
-      </ion-infinite-scroll>
-
-  <div #commentlist>  <!--(scroll)="onScroll()"-->
-    <div ion-item text-wrap *ngFor="let comment of comments"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
+  <div #commentlist (scroll)="onScroll()" style="overflow-y: scroll; height:100%;">
+    <div ion-item text-wrap *ngFor="let comment of comments | async"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
       <ion-row>
         <div col-lg-1 col-md-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      
         <div col-lg-9 col-md-10>
@@ -32,7 +24,14 @@
 <!-- templete -->
   <!-- <ion-list>
     <ion-item *ngFor="let i of items">{{i}}</ion-item>
-  </ion-list> -->
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll> -->
+
 </ion-content>
 
 
