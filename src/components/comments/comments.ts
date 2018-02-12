@@ -26,6 +26,7 @@ import { Vote } from '../../models/vote';
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
+  chatroomRefA: AngularFireList<{}>;
   databaselength: number;
   chatroomComments: number;
   batchA: any;
@@ -51,8 +52,12 @@ export class CommentsComponent {
   comment_votes: Array<any>;
 
 
-  constructor(public afDB:AngularFireDatabase, public navParams: NavParams, ) {
+  constructor(public afDB:AngularFireDatabase, public navParams: NavParams, public afAuth: AngularFireAuth ) {
     this.chatroomID = this.navParams.get('chatroomID');
+    this.uid = afAuth.auth.currentUser.uid;
+    console.log('uid: ' + this.uid);
+
+    this.comment_votes = new Array<any>();
   }
   
   /**
@@ -70,7 +75,7 @@ export class CommentsComponent {
     this.checkDataBaseInfo();
     this.knownKeyArray = [];//empty array to store keys 
     let q,k;
-    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+    this.chatroomRefA = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
       q = ref.orderByKey().limitToLast(10);//get the very last 10 query in the database
       k = ref.orderByKey().limitToLast(11);//create another query with an extra key, this will be use for the next query
       k.once('value', (snapshot)=>{
@@ -82,7 +87,8 @@ export class CommentsComponent {
       })
       return q;
     });
-    
+
+    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
     this.chatroomRef.valueChanges().subscribe(data =>{
       for(let comment of data){
         console.log('comment: ' + comment);
@@ -103,7 +109,7 @@ export class CommentsComponent {
       console.log('initial comment_votes: ' + this.comment_votes);
     });
 
-    this.batchA = this.chatroomRef.valueChanges();
+    this.batchA = this.chatroomRefA.valueChanges();
     this.batchA.subscribe((data: any[])=>{ //subscribe; the data becomes an array
       this.comments = data;
     });
@@ -234,18 +240,106 @@ export class CommentsComponent {
    * @param pointDelta 1 or -1
    */
   vote(event, commentID, commentPoints, pointDelta){
-    //console.log(commentID + " " + commentPoints + " " + pointDelta);
-    /**
-     * calculate new points
-     */
-    let newPoints = commentPoints + pointDelta;
+    let voted = false;
+    let commentKey = null;
+    let newPoints = 0;
+    if(this.comment_votes != null){
+      console.log(this.comment_votes);
+      for(let voteKey in this.comment_votes){
+        console.log("commentID" + commentID + "voteKey: " + voteKey + "\ncomment_vote.commentKey:  " + this.comment_votes[voteKey].commentKey+
+          "\ncurrent_user.uid: " + this.uid + "\ncomment_vote.value: " + this.comment_votes[voteKey].value +
+          "\npointDelta: " + pointDelta );
+        if(this.comment_votes[voteKey].commentKey == commentID && this.comment_votes[voteKey].value == pointDelta){
+          voted = true;
+          this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').remove(this.comment_votes[voteKey].vid);
+          newPoints = commentPoints + pointDelta * -1;
+          let indexOfToRemove = this.comment_votes.indexOf({commentKey: commentID, value: pointDelta}, 0);
+          console.log('indexOfToRemove: ' + indexOfToRemove);
+          this.comment_votes.splice(indexOfToRemove, 1);
+
+        }
+        else if(this.comment_votes[voteKey].commentKey == commentID && this.comment_votes[voteKey].value != pointDelta){
+          voted = true;
+          let oldVote = new Vote();
+          oldVote.uid = this.uid;
+          oldVote.value = pointDelta;
+          newPoints = commentPoints + pointDelta * 2;
+          this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').update(this.comment_votes[voteKey].vid, oldVote);
+          this.comment_votes[voteKey].value = pointDelta;
+
+        }
+      }
+    }
+
+    if(!voted){
+      //console.log(commentID + " " + commentPoints + " " + pointDelta);
+      /**
+       * calculate new points
+       */
+      newPoints = commentPoints + pointDelta;
+
+      /**
+       * update database
+       */
+
+      let newVote = new Vote();
+      newVote.uid = this.uid;
+      newVote.value = pointDelta;
+      let vote_id = this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').push(newVote).key;
+      this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history/').update(vote_id, {vid: vote_id });
+
+      /**
+       * update comments_vote
+       */
+      this.comment_votes.push({
+        vid: vote_id,
+        commentKey: commentID,
+        value: pointDelta
+      })
+    }
 
     /**
-     * update database
+     * update points
      */
-
     this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
       points: newPoints
     }); 
+  }
+
+  /**
+   * scroll to bottom
+   */
+  scrollToBottom(): void{
+    try{
+      this.commentlist.nativeElement.scrollTop = this.commentlist.nativeElement.scrollHeight;
+      console.log('scrolltobottom: ');
+    }
+    catch(err){
+      console.log('did not scrolltobottom: ' + err);
+    }
+  }
+
+  detBtnColor(vote_history: Array<any> , btnValue){
+    console.log(vote_history);
+    if(vote_history != null){
+      let commentValue = null
+      for(let vote_key in vote_history){
+        if(vote_history[vote_key].uid == this.uid ){
+          commentValue = vote_history[vote_key].value;
+        }
+      }
+      console.log('commentValue: ' + commentValue + ' bntValue: ' + btnValue);
+      if(commentValue != null){
+        if(btnValue == 1 && commentValue == 1){
+        return 'orange';
+        }
+        else if(btnValue == -1 && commentValue == -1){
+          return 'purple';
+        }
+      }
+    }
+    else{
+      return 'white';
+    }
   }
 }
