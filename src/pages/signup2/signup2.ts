@@ -43,23 +43,15 @@ export class Signup2Page {
     this.afAuth.auth
       .createUserWithEmailAndPassword(this.user.email, this.password)
         .then((success) => {
-          /** grab the uid from auth
-           * and assign it to user obj
+          /**
+           * update user profile with uid from auth obj
            */
           this.user.uid = this.afAuth.auth.currentUser.uid;
-           /**
+
+          /**
            * create user profile entry
            */
           this.createProfile();
-
-          /**
-           * update user profile with uid from auth obj
-           * and update display name
-           */
-          this.afAuth.auth.currentUser.updateProfile({
-            displayName: this.user.username,
-            photoURL: ""
-          });
 
           /**
            * navigate to welcome page

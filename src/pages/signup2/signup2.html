@@ -16,22 +16,10 @@
 <ion-content padding>
   <ion-grid col-md-5>
     <form (ngSubmit)="signup()">
-        <ion-row>
-            <ion-item>
-              <ion-label>User Name</ion-label>
-              <ion-input type="text" name="username" [(ngModel)]="user.username"></ion-input>
-            </ion-item>
-          </ion-row>
-        <ion-row>
-            <ion-item>
-              <ion-label>First Name</ion-label>
-              <ion-input type="text" name="first_name" [(ngModel)]="user.first_name"></ion-input>
-            </ion-item>
-          </ion-row>
       <ion-row>
         <ion-item>
-          <ion-label>Last Name</ion-label>
-          <ion-input type="text" name="last_name" [(ngModel)]="user.last_name"></ion-input>
+          <ion-label>Name</ion-label>
+          <ion-input type="text" name="name" [(ngModel)]="user.name"></ion-input>
         </ion-item>
       </ion-row>
       <ion-row>

@@ -7,37 +7,16 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>Test Chatroom</ion-title>
-    <!-- <!-- <ion-buttons>
-      <button ion-button icon-only menuToggle>
-          <ion-icon name="menu"></ion-icon>
-      </button>
-    </ion-buttons> -->
-
-    <ion-buttons end>
-      <button ion-button icon-only (click)="signOut()"><ion-icon ios="ios-log-out" md="md-log-out"></ion-icon></button>
-    </ion-buttons>
- 
+    <ion-title>chatroom</ion-title>
   </ion-navbar>
+
 </ion-header>
 
-<!-- put stuff here -->
-<ion-content col-md-6>
-  <ion-row align-items-center>
-      <ion-grid #scrollMe (scroll)="onScroll()" id="CommentsArea">
-        <comments chatroom="chatroomID"></comments>
-      </ion-grid>
-  </ion-row>
-  
-  <form (ngSubmit)="checkProfanity()">
-    <ion-row id="CommentInputArea">
-      <ion-input name="content" type="text" [(ngModel)]="data.input.content" placeholder="Type here..."></ion-input>
-      <button id="SendButton" ion-button float-right color='primary' type='submit'>
-        <ion-icon ios="ios-send" md="md-send">
-        </ion-icon>
-      </button>
-    </ion-row>
-  </form>             
-  
-  </ion-content>
 
+<ion-content padding>
+
+  <ion-grid>
+    <comments chatroom="chatroomID"></comments>
+  </ion-grid>
+
+</ion-content>

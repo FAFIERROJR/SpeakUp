@@ -55,7 +55,7 @@ export class WelcomePage{
         //     this.navCtrl.push(TestingPage, {'chatroomID': 1, 'username': this.username})
         // }
         
-        this.navCtrl.push(TestingPage, {'chatroomID': 1, 'username': this.username, 'uid': this.uid, 'randomTempID': this.randomTempID})
+        this.navCtrl.push(TestingPage, {'chatroomID': 4, 'username': this.username, 'uid': this.uid, 'randomTempID': this.randomTempID})
         
     }
 
@@ -73,7 +73,7 @@ export class WelcomePage{
             alert.present();
         }
         else{
-            this.navCtrl.push(ChatroomPage, {'chatroomID': 0, 'username': this.username, 'uid': this.uid, 'randomTempID': this.randomTempID});
+            this.navCtrl.push(ChatroomPage, {'chatroomID': 0});
         }
     }
 
