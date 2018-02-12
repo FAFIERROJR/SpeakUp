@@ -80,9 +80,12 @@ export class TestingPage{
     this.afdb.object('chatrooms/' + this.chatroomID + '/comments/' + this.uniqueKey).update({
       commentKey: this.uniqueKey
     })
+    
     this.data.input.content = '';
    
   }
+
+  
 
   /**
    * check the input with the array of words. if there is a match between the array of words and the input than alert, else let them send.
@@ -117,7 +120,7 @@ export class TestingPage{
   signOut(): void {
     this.afAuth.auth.signOut();
     this.navCtrl.push(WelcomePage);
-}
+  }
 
 }
 
