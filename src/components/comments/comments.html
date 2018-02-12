@@ -1,14 +1,6 @@
 <ion-content class="comment-area" >
-
-    <ion-infinite-scroll position="top" *ngIf="retrievable" (ionInfinite)="doInfinite($event)">
-        <ion-infinite-scroll-content
-          loadingSpinner="bubbles"
-          loadingText="Loading more data...">
-        </ion-infinite-scroll-content>
-      </ion-infinite-scroll>
-
-  <div #commentlist>  <!--(scroll)="onScroll()"-->
-    <div ion-item text-wrap *ngFor="let comment of comments"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
+  <div #commentlist (scroll)="onScroll()" style="overflow-y: scroll; height:100%;">
+    <div ion-item text-wrap *ngFor="let comment of comments | async"><!-- (click)="onClick($event)", *ngFor is a for loop --> 
       <ion-row>
         <div col-lg-1 col-md-1><ion-icon class="icon-size" ios="ios-person" md="md-person"></ion-icon></div>      
         <div col-lg-9 col-md-10>
@@ -21,10 +13,10 @@
           </p>
           <p>{{comment.content}}</p>
         </div>
-        <div col-lg-2 col-md-1 float-right>
+        <div id="{{comment.commentKey}}" col-lg-2 col-md-1 float-right>
           <button float-right *ngIf="isInstructor" ion-button small color="danger" class="smaller-button" (click)="removeComment($event, comment.commentKey)"><ion-icon class="icon-size2" ios="ios-trash" md="md-trash"></ion-icon></button>                                
-          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)"><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
-          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
+          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, 1)" [style.color]="detBtnColor(comment.vote_history, 1)" ><ion-icon class="icon-size2" ios="ios-thumbs-up" md="md-thumbs-up"></ion-icon></button>        
+          <button ion-button small (click)="vote($event, comment.commentKey, comment.points, -1)" [style.color]="detBtnColor(comment.vote_history, -1)"><ion-icon class="icon-size2" ios="ios-thumbs-down" md="md-thumbs-down"></ion-icon></button>
         </div>
     </ion-row>
     </div>
@@ -32,7 +24,14 @@
 <!-- templete -->
   <!-- <ion-list>
     <ion-item *ngFor="let i of items">{{i}}</ion-item>
-  </ion-list> -->
+  </ion-list>
+  <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more data...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll> -->
+
 </ion-content>
 
 
