@@ -26,6 +26,7 @@ import { Vote } from '../../models/vote';
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
+  chatroomRefA: AngularFireList<{}>;
   databaselength: number;
   chatroomComments: number;
   batchA: any;
@@ -45,17 +46,20 @@ export class CommentsComponent {
   isInstructor: boolean = false;
   username: any;
   retrievable: boolean = false;
+  @ViewChild('commentlist') private commentlist: ElementRef;
   pointsElementTextContent: string;
   items = [];
   comment_votes: Array<any>;
 
+
   constructor(public afDB:AngularFireDatabase, public navParams: NavParams, public afAuth: AngularFireAuth ) {
-    this.i = 1;
+    this.chatroomID = this.navParams.get('chatroomID');
     this.uid = afAuth.auth.currentUser.uid;
     console.log('uid: ' + this.uid);
 
     this.comment_votes = new Array<any>();
-  }  
+  }
+  
   /**
    * this method is for testing and logging the id of the parent of the element that was clicked
    */
@@ -71,7 +75,7 @@ export class CommentsComponent {
     this.checkDataBaseInfo();
     this.knownKeyArray = [];//empty array to store keys 
     let q,k;
-    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+    this.chatroomRefA = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
       q = ref.orderByKey().limitToLast(10);//get the very last 10 query in the database
       k = ref.orderByKey().limitToLast(11);//create another query with an extra key, this will be use for the next query
       k.once('value', (snapshot)=>{
@@ -83,7 +87,8 @@ export class CommentsComponent {
       })
       return q;
     });
-    
+
+    this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
     this.chatroomRef.valueChanges().subscribe(data =>{
       for(let comment of data){
         console.log('comment: ' + comment);
@@ -104,7 +109,7 @@ export class CommentsComponent {
       console.log('initial comment_votes: ' + this.comment_votes);
     });
 
-    this.batchA = this.chatroomRef.valueChanges();
+    this.batchA = this.chatroomRefA.valueChanges();
     this.batchA.subscribe((data: any[])=>{ //subscribe; the data becomes an array
       this.comments = data;
     });
@@ -183,17 +188,43 @@ export class CommentsComponent {
         return q;//return the query
       });
 
-  ngOnViewChecked(){
-    this.scrollToBottom();
+      /**
+       * if there is still something in the database, then continue to retrieve
+       */
+      if(this.retrievable){
+        this.chatroomRef.valueChanges().subscribe(nextBatch =>{
+          //concatinate the nextbatch onto of the old batch, and show it in the comments
+          this.comments = Array.prototype.concat(nextBatch, oldBatch);
+          //mapping the commentkeys to compare them to each other to know when the end of the database is   
+          let mapNextBatch = nextBatch.map(array => array.commentKey);  
+          // if the firstknownkey matches the nextbatch's first key, that means we've retrieved everything from the database
+          if(this.comments.length === this.databaselength){
+            console.log('end');
+            this.retrievable = false;
+          }
+          else{
+            this.retrievable = true;
+            console.log('firstknownkey', this.firstKnownKey);
+          }
+        });
+      }
+    }catch(err){
+      console.log(err);
+    }
   }
 
-   doInfinite(infiniteScroll){ 
+  doInfinite(infiniteScroll){ 
     setTimeout(()=>{
       this.getComments(this.firstKnownKey, this.comments);
       infiniteScroll.complete();
     }, 800);
   }
 
+  /**
+   * remove the comment if it is an instructor
+   * @param event click
+   * @param commentID commentkey id
+   */
   removeComment(event, commentID){
     //console.log(commentID);
     if(this.isInstructor){
@@ -215,9 +246,9 @@ export class CommentsComponent {
     if(this.comment_votes != null){
       console.log(this.comment_votes);
       for(let voteKey in this.comment_votes){
-        console.log("commentID" + commentID + "voteKey: " + voteKey + "\ncomment_vote.commentKey:  " + this.comment_votes[voteKey].commentKey+
-          "\ncurrent_user.uid: " + this.uid + "\ncomment_vote.value: " + this.comment_votes[voteKey].value +
-          "\npointDelta: " + pointDelta );
+        // console.log("commentID" + commentID + "voteKey: " + voteKey + "\ncomment_vote.commentKey:  " + this.comment_votes[voteKey].commentKey+
+        //   "\ncurrent_user.uid: " + this.uid + "\ncomment_vote.value: " + this.comment_votes[voteKey].value +
+        //   "\npointDelta: " + pointDelta );
         if(this.comment_votes[voteKey].commentKey == commentID && this.comment_votes[voteKey].value == pointDelta){
           voted = true;
           this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').remove(this.comment_votes[voteKey].vid);
@@ -289,7 +320,7 @@ export class CommentsComponent {
   }
 
   detBtnColor(vote_history: Array<any> , btnValue){
-    console.log(vote_history);
+    //console.log(vote_history);
     if(vote_history != null){
       let commentValue = null
       for(let vote_key in vote_history){
@@ -297,7 +328,7 @@ export class CommentsComponent {
           commentValue = vote_history[vote_key].value;
         }
       }
-      console.log('commentValue: ' + commentValue + ' bntValue: ' + btnValue);
+      //console.log('commentValue: ' + commentValue + ' bntValue: ' + btnValue);
       if(commentValue != null){
         if(btnValue == 1 && commentValue == 1){
         return 'orange';
