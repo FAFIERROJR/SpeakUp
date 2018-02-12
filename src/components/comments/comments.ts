@@ -110,6 +110,7 @@ export class CommentsComponent {
       this.databaselength = data.length;
     });
   }
+  
   /**
    * retreive comments from database by query. 
    * ordering by key, stopping at the storedkey, and retreive only the lasts 'n' comments
