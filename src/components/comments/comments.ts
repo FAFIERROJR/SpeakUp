@@ -246,9 +246,9 @@ export class CommentsComponent {
     if(this.comment_votes != null){
       console.log(this.comment_votes);
       for(let voteKey in this.comment_votes){
-        console.log("commentID" + commentID + "voteKey: " + voteKey + "\ncomment_vote.commentKey:  " + this.comment_votes[voteKey].commentKey+
-          "\ncurrent_user.uid: " + this.uid + "\ncomment_vote.value: " + this.comment_votes[voteKey].value +
-          "\npointDelta: " + pointDelta );
+        // console.log("commentID" + commentID + "voteKey: " + voteKey + "\ncomment_vote.commentKey:  " + this.comment_votes[voteKey].commentKey+
+        //   "\ncurrent_user.uid: " + this.uid + "\ncomment_vote.value: " + this.comment_votes[voteKey].value +
+        //   "\npointDelta: " + pointDelta );
         if(this.comment_votes[voteKey].commentKey == commentID && this.comment_votes[voteKey].value == pointDelta){
           voted = true;
           this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').remove(this.comment_votes[voteKey].vid);
@@ -320,7 +320,7 @@ export class CommentsComponent {
   }
 
   detBtnColor(vote_history: Array<any> , btnValue){
-    console.log(vote_history);
+    //console.log(vote_history);
     if(vote_history != null){
       let commentValue = null
       for(let vote_key in vote_history){
@@ -328,7 +328,7 @@ export class CommentsComponent {
           commentValue = vote_history[vote_key].value;
         }
       }
-      console.log('commentValue: ' + commentValue + ' bntValue: ' + btnValue);
+      //console.log('commentValue: ' + commentValue + ' bntValue: ' + btnValue);
       if(commentValue != null){
         if(btnValue == 1 && commentValue == 1){
         return 'orange';
