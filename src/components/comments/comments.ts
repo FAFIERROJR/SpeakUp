@@ -98,14 +98,12 @@ export class CommentsComponent {
         this.isInstructor = false;
       }
     });
-
-    
   }
 
   checkDataBaseInfo(){
-    let i;
-    let chatRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments').valueChanges();
-    chatRef.subscribe((data:any[])=>{
+    this.afDB.list('chatrooms/' + this.chatroomID + '/comments')
+      .valueChanges()
+      .subscribe((data:any[])=>{
       if(data.length >= 11){
         this.retrievable = true;
       }
