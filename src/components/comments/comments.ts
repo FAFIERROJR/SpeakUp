@@ -26,10 +26,15 @@ import { Vote } from '../../models/vote';
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
+  newcomments: any;
+  comments_temp: any[];
+  temp = [];
+  newBatch = [];
+  alpha = [];
   chatroomRefA: AngularFireList<{}>;
   databaselength: number;
   chatroomComments: number;
-  batchA: any;
+  onInitBatch: any;
   knownKey: any;
   knownKeyArray: any[];
   firstKnownKey: any;
@@ -72,22 +77,9 @@ export class CommentsComponent {
    * when comments are init, intialize these
    */
   ngOnInit(){
-    this.checkDataBaseInfo();
-    this.knownKeyArray = [];//empty array to store keys 
-    let q,k;
-    this.chatroomRefA = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
-      q = ref.orderByKey().limitToLast(10);//get the very last 10 query in the database
-      k = ref.orderByKey().limitToLast(11);//create another query with an extra key, this will be use for the next query
-      k.once('value', (snapshot)=>{
-        snapshot.forEach((childSnapShot): any =>{
-          this.knownKey = childSnapShot.key;
-          this.knownKeyArray.push(this.knownKey);
-        })
-        this.firstKnownKey = this.knownKeyArray[0];//first known key to saved for the first scrolling
-      })
-      return q;
-    });
-
+    /**
+     * Vote History
+     */
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
     this.chatroomRef.valueChanges().subscribe(data =>{
       for(let comment of data){
@@ -109,11 +101,47 @@ export class CommentsComponent {
       console.log('initial comment_votes: ' + this.comment_votes);
     });
 
-    this.batchA = this.chatroomRefA.valueChanges();
-    this.batchA.subscribe((data: any[])=>{ //subscribe; the data becomes an array
-      this.comments = data;
+    /**
+     * Infinite
+     */
+    this.checkDataBaseInfo();
+    this.knownKeyArray = [];//empty array to store keys 
+    let q,k,a;
+    this.chatroomRefA = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+      q = ref.orderByKey().limitToLast(10);//get the very last 10 query in the database
+      k = ref.orderByKey().limitToLast(11);//create another query with an extra key, this will be use for the next query
+      k.once('value', (snapshot)=>{
+        snapshot.forEach((childSnapShot): any =>{
+          this.knownKey = childSnapShot.key;
+          this.knownKeyArray.push(this.knownKey);
+        })
+        this.firstKnownKey = this.knownKeyArray[0];//first known key to saved for the first scrolling
+      })
+      return q;
     });
-    
+
+    this.onInitBatch = this.chatroomRefA.valueChanges();//this is fired off multiple times, why? 
+    this.onInitBatch.subscribe((data: any[])=>{ //subscribe; the data becomes an array
+      if(this.comments.length === 0){
+        this.comments = data;
+        console.log('comments array empty');
+      }
+      else{
+        this.temp = [];
+        this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+          a = ref.limitToLast(1);//get the very last 10 query in the database
+          a.once('value', (snapshot)=>{
+            snapshot.forEach((childSnapShot): any =>{
+              this.temp.push(childSnapShot.val());
+            })
+          })
+          this.comments_temp = Array.prototype.concat(this.comments, this.temp);
+          return a;
+        });
+        console.log(this.comments_temp);
+        this.comments = this.comments_temp;
+      }
+    });
     /**
      * check if the user is an instructor using the userProfile database and the id of the user logged on
      * and change the value of occupation and if it contains 'instructor'.
@@ -156,6 +184,7 @@ export class CommentsComponent {
       let q,k,m; //query items      
       this.knownKeyArray = [];//initailize empty array to store the comment keys
 
+      /**Mainly used for when a new chatroom is created for the first time and new comments are added and scroll has not been added */
       if(storedKey === undefined || storedKey === null){
         this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
           m = ref.orderByKey().limitToLast(11);//create another query with an extra key, this will be use for the next query
@@ -171,43 +200,66 @@ export class CommentsComponent {
         });
       }
 
-      this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
-        q = ref.orderByKey().endAt(storedKey).limitToLast(10);
-        k = ref.orderByKey().endAt(storedKey).limitToLast(11); 
-        /**
-         * get the snapshot data, and only get the key of the data.
-         * add them to the array of keys
-         */ 
-        k.once('value', (snapshot)=>{
-          snapshot.forEach((childSnapShot): any =>{
-            this.knownKey = childSnapShot.key;
-            this.knownKeyArray.push(this.knownKey);
-          })
-          this.firstKnownKey = this.knownKeyArray[0];//this will be the next known key use for the next query
-        })
-        return q;//return the query
-      });
-
-      /**
-       * if there is still something in the database, then continue to retrieve
-       */
       if(this.retrievable){
-        this.chatroomRef.valueChanges().subscribe(nextBatch =>{
-          //concatinate the nextbatch onto of the old batch, and show it in the comments
-          this.comments = Array.prototype.concat(nextBatch, oldBatch);
-          //mapping the commentkeys to compare them to each other to know when the end of the database is   
-          let mapNextBatch = nextBatch.map(array => array.commentKey);  
-          // if the firstknownkey matches the nextbatch's first key, that means we've retrieved everything from the database
-          if(this.comments.length === this.databaselength){
-            console.log('end');
-            this.retrievable = false;
-          }
-          else{
-            this.retrievable = true;
-            console.log('firstknownkey', this.firstKnownKey);
-          }
-        });
+        let newBatch = [];
+        this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+          q = ref.orderByKey().endAt(storedKey).limitToLast(10);
+          q.once('value', (snapshot)=>{
+            snapshot.forEach((childSnapShot): any =>{
+              newBatch.push(childSnapShot.val());
+              // console.log('childss: ', JSON.stringify(childSnapShot))
+            })
+          })
+          this.comments = Array.prototype.concat(newBatch, oldBatch);
+          console.log('comments array: ', this.comments);
+        
+          /**
+           * get the snapshot data, and only get the key of the data.
+           * add them to the array of keys
+           */ 
+          k = ref.orderByKey().endAt(storedKey).limitToLast(11);          
+          k.once('value', (snapshot)=>{
+            snapshot.forEach((childSnapShot): any =>{
+              this.knownKey = childSnapShot.key;
+              this.knownKeyArray.push(this.knownKey);
+              // console.log('childss: ', JSON.stringify(childSnapShot))
+            })
+            this.firstKnownKey = this.knownKeyArray[0];//this will be the next known key use for the next query
+          })
+          
+          return k;//return the query
+        }); 
+        // if the firstknownkey matches the nextbatch's first key, that means we've retrieved everything from the database
+        if(this.comments.length === this.databaselength){
+          console.log('end');
+          this.retrievable = false;
+        }
+        else{
+          this.retrievable = true;
+          console.log('firstknownkey', this.firstKnownKey);
+        }
       }
+
+      // /**
+      //  * if there is still something in the database, then continue to retrieve
+      //  */
+      // if(this.retrievable){
+      //   this.chatroomRef.valueChanges().subscribe(nextBatch =>{
+      //     //concatinate the nextbatch onto of the old batch, and show it in the comments
+      //     this.comments = Array.prototype.concat(nextBatch, oldBatch);
+      //     //mapping the commentkeys to compare them to each other to know when the end of the database is   
+      //     let mapNextBatch = nextBatch.map(array => array.commentKey);  
+      //     // if the firstknownkey matches the nextbatch's first key, that means we've retrieved everything from the database
+      //     if(this.comments.length === this.databaselength){
+      //       console.log('end');
+      //       this.retrievable = false;
+      //     }
+      //     else{
+      //       this.retrievable = true;
+      //       console.log('firstknownkey', this.firstKnownKey);
+      //     }
+      //   });
+      // }
     }catch(err){
       console.log(err);
     }
