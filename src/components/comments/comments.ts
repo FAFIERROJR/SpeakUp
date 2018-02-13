@@ -82,6 +82,7 @@ export class CommentsComponent {
      */
     this.chatroomRef = this.afDB.list('chatrooms/' + this.chatroomID + '/comments');
     this.chatroomRef.valueChanges().subscribe(data =>{
+
       for(let comment of data){
         console.log('comment: ' + comment);
         for(let vote_history of comment){
@@ -123,25 +124,21 @@ export class CommentsComponent {
     this.chatroomRefA.valueChanges().subscribe(data=>{ //subscribe; the data becomes an array
       if(this.comments.length === 0){
         this.comments = data;
-        console.log('comments array empty');
+        console.log('comments array empty', data);
       }
       else{
-        this.temp = [];
+        //prevent a bug where a dup is added without the commentkey
         this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
-          let a = ref.limitToLast(1);//get the very last 10 query in the database
-          a.once('value', (snapshot)=>{
-            snapshot.forEach((childSnapShot): any =>{
-              this.temp.push(childSnapShot.val());
-            })
-          })
+          let a = ref.limitToLast(1);//get the very last query in the database
           return a;
+        }).valueChanges().subscribe(data2=>{
+          this.comments_temp = Array.prototype.concat(this.comments, data2);
+          /**
+           * not sure why its being duplicated, but made method to remove the duplicates comments with the same keys
+           */
+          this.comments = this.removeDuplicates(this.comments_temp, "commentKey");
+          console.log(this.comments);
         });
-        this.comments_temp = Array.prototype.concat(this.comments, this.temp);
-        /**
-         * not sure why its being duplicated, but made method to remove the duplicates comments with the same keys
-         */
-        this.comments = this.removeDuplicates(this.comments_temp, "commentKey");
-        console.log(this.comments);
       }
     });
     /**
@@ -254,6 +251,7 @@ export class CommentsComponent {
         if(this.comments.length === this.databaselength){
           console.log('end');
           this.retrievable = false;
+      
         }
         else{
           this.retrievable = true;
