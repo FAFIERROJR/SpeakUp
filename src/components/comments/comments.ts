@@ -136,8 +136,8 @@ export class CommentsComponent {
           /**
            * not sure why its being duplicated, but made method to remove the duplicates comments with the same keys
            */
-          this.comments = this.removeDuplicates(this.comments_temp, "commentKey");
-          console.log(this.comments);
+          this.comments = this.removeDuplicates(this.comments_temp, 'commentKey');
+          //console.log('new comment', this.comments);
         });
       }
     });
@@ -163,21 +163,28 @@ export class CommentsComponent {
   /**
    * remove any duplicates comments with the same key
    * @param mArray the array of comments to be run though
-   * @param index  the index of the objects in the array
+   * @param key  the index of the objects in the array
    */
-  removeDuplicates(mArray, index) {
-      let newArray = [];
-      let objects  = {};
-      let items;
-      for(items in mArray) {
-        objects[mArray[items][index]] = mArray[items];
+  removeDuplicates(originalArray, objKey) {
+    let newArray = [];
+    let values = [];
+    let value;
+    for(let index in originalArray) {
+      value = originalArray[index][objKey];
+      if(values.indexOf(value) === -1) {
+        newArray.push(originalArray[index]);
+        values.push(value);
       }
-
-      for(items in objects) {
-          newArray.push(objects[items]);
+    }
+    /**fix bug: a duplicate comment gets added to array but with no commentKey */
+    newArray.forEach((object, index)=>{
+      if(object.commentKey === undefined){
+        newArray.splice(index,1);
       }
-      console.log('removeDuplicates');
-      return newArray;
+    });
+  //console.log('newarray', newArray);
+    return newArray;
+  
   }
   
   checkDataBaseInfo(){
@@ -212,9 +219,9 @@ export class CommentsComponent {
             this.knownKeyArray.push(this.knownKey);
           })
             storedKey = this.knownKeyArray[0];//first known key to saved for the first scrolling
-            console.log('storedkey2',storedKey);
+            //console.log('storedkey2',storedKey);
           })
-          return m
+          return m;
         });
       }
 
@@ -229,7 +236,7 @@ export class CommentsComponent {
             })
           })
           this.comments = Array.prototype.concat(newBatch, oldBatch);
-          console.log('comments array: ', this.comments);
+          console.log('net comments array: ', this.comments);
         
           /**
            * get the snapshot data, and only get the key of the data.
@@ -244,18 +251,16 @@ export class CommentsComponent {
             })
             this.firstKnownKey = this.knownKeyArray[0];//this will be the next known key use for the next query
           })
-          
           return k;//return the query
         }); 
         // if the firstknownkey matches the nextbatch's first key, that means we've retrieved everything from the database
         if(this.comments.length === this.databaselength){
           console.log('end');
           this.retrievable = false;
-      
         }
         else{
           this.retrievable = true;
-          console.log('firstknownkey', this.firstKnownKey);
+          //console.log('firstknownkey', this.firstKnownKey);
         }
       }
 
@@ -297,9 +302,14 @@ export class CommentsComponent {
    * @param commentID commentkey id
    */
   removeComment(event, commentID){
-    //console.log(commentID);
     if(this.isInstructor){
+      let commentTempMap = this.comments.map(arr=>arr.commentKey);//create a temp map of the comments array with only the comment keys
+      let commentIndex = commentTempMap.indexOf(commentID)//get the index of the commentID in the temp map
+      console.log('commentID',commentID, commentIndex);
+      
       this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).remove();
+      this.comments.splice(commentIndex, 1);
+      //console.log('commentsafter', this.comments);
     }
   }
 
@@ -315,7 +325,7 @@ export class CommentsComponent {
     let commentKey = null;
     let newPoints = 0;
     if(this.comment_votes != null){
-      console.log(this.comment_votes);
+      //console.log(this.comment_votes);
       for(let voteKey in this.comment_votes){
         // console.log("commentID" + commentID + "voteKey: " + voteKey + "\ncomment_vote.commentKey:  " + this.comment_votes[voteKey].commentKey+
         //   "\ncurrent_user.uid: " + this.uid + "\ncomment_vote.value: " + this.comment_votes[voteKey].value +
@@ -325,7 +335,7 @@ export class CommentsComponent {
           this.afDB.list('chatrooms/' + this.chatroomID + '/comments/' + commentID + '/vote_history').remove(this.comment_votes[voteKey].vid);
           newPoints = commentPoints + pointDelta * -1;
           let indexOfToRemove = this.comment_votes.indexOf({commentKey: commentID, value: pointDelta}, 0);
-          console.log('indexOfToRemove: ' + indexOfToRemove);
+          //console.log('indexOfToRemove: ' + indexOfToRemove);
           this.comment_votes.splice(indexOfToRemove, 1);
 
         }
