@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms'
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 
-import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
+import { ClassListPage } from '../pages/classlist/classlist';
 import { ItemDetailsPage } from '../pages/item-details/item-details';
 import { ListPage } from '../pages/list/list';
 import { LoginPage } from '../pages/login/login';
@@ -36,7 +36,7 @@ import {Signup2Page} from '../pages/signup2/signup2'
 @NgModule({
   declarations: [
     MyApp,
-    HelloIonicPage,
+    ClassListPage,
     ItemDetailsPage,
     ListPage,
     LoginPage,
@@ -60,7 +60,7 @@ import {Signup2Page} from '../pages/signup2/signup2'
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HelloIonicPage,
+    ClassListPage,
     ItemDetailsPage,
     ListPage,
     LoginPage,

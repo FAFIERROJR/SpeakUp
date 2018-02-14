@@ -4,7 +4,7 @@ import { Platform, MenuController, Nav } from 'ionic-angular';
 
 import{LoginPage} from "../pages/login/login";
 import{SignUpPage} from "../pages/signup/signup"
-import { HelloIonicPage } from '../pages/hello-ionic/hello-ionic';
+import { ClassListPage } from '../pages/classlist/classlist';
 import { ListPage } from '../pages/list/list';
 import {WelcomePage} from '../pages/welcome/welcome'
 
@@ -38,7 +38,7 @@ export class MyApp {
       {title:'Welcome', component: WelcomePage},
       {title: 'Login', component: LoginPage},
       {title:'Sign Up', component: SignUpPage},
-      {title: 'Hello Ionic', component: HelloIonicPage},
+      {title: 'Class List', component: ClassListPage},
       {title: 'My First List', component: ListPage},
       {title: 'Testing Page', component: TestingPage}
     ];

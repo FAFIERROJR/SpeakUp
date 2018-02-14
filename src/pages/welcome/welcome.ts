@@ -4,7 +4,7 @@ import { NavGroup } from 'ionic-angular/navigation/nav-util'
 import{LoginPage} from '../login/login'
 import{SignUpPage} from '../signup/signup'
 import{TestingPage} from '../testing/testing'
-import { HelloIonicPage } from '../hello-ionic/hello-ionic';
+import { ClassListPage } from '../classlist/classlist';
 import { ChatroomPage } from '../chatroom/chatroom';
 import { PARAMETERS } from '@angular/core/src/util/decorators';
 import { NewPage } from '../new/new';
@@ -59,8 +59,8 @@ export class WelcomePage{
         
     }
 
-    goHelloIonicPage(){
-        this.navCtrl.push(HelloIonicPage);
+    goClassListPage() {
+        this.navCtrl.push(ClassListPage);
     }
 
     goChatroomPage(){
