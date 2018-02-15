@@ -139,6 +139,7 @@ export class CommentsComponent {
           this.comments = this.removeDuplicates(this.comments_temp, 'commentKey');
           //console.log('new comment', this.comments);
         });
+        console.log("CHANGES");
       }
     });
     /**
@@ -337,7 +338,6 @@ export class CommentsComponent {
           let indexOfToRemove = this.comment_votes.indexOf({commentKey: commentID, value: pointDelta}, 0);
           //console.log('indexOfToRemove: ' + indexOfToRemove);
           this.comment_votes.splice(indexOfToRemove, 1);
-
         }
         else if(this.comment_votes[voteKey].commentKey == commentID && this.comment_votes[voteKey].value != pointDelta){
           voted = true;
@@ -385,6 +385,8 @@ export class CommentsComponent {
     this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
       points: newPoints
     }); 
+
+
   }
 
   /**
