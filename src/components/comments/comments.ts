@@ -26,6 +26,9 @@ import { Vote } from '../../models/vote';
   templateUrl: 'comments.html'
 })
 export class CommentsComponent { 
+  disableScrollDown: boolean = false;
+  retrieveInt: number = 10;
+  comments: any;
   newcomments: any;
   comments_temp: any[];
   temp = [];
@@ -44,7 +47,7 @@ export class CommentsComponent {
   commentPoints: any;
   commentID: any;
   data: any;
-  comments = [];
+  //comments = [];
   @Input() chatroomID: string;
   chatroomRef: any;
   uid: any;
@@ -55,7 +58,7 @@ export class CommentsComponent {
   pointsElementTextContent: string;
   items = [];
   comment_votes: Array<any>;
-
+  commentKeyTemp: any;
 
   constructor(public afDB:AngularFireDatabase, public navParams: NavParams, public afAuth: AngularFireAuth ) {
     this.chatroomID = this.navParams.get('chatroomID');
@@ -100,12 +103,78 @@ export class CommentsComponent {
         }
       }
       console.log('initial comment_votes: ' + this.comment_votes);
-    });
 
+    });
     /**
      * Infinite
      */
-    this.checkDataBaseInfo();
+    //this.checkDataBaseInfo();
+    //this.newComments();
+
+
+    /**
+     * check if the user is an instructor using the userProfile database and the id of the user logged on
+     * and change the value of occupation and if it contains 'instructor'.
+     * need to add the property manually in firebase. userProfile>[uid]> {occupation: 'instructor'}
+     */
+    this.uid = this.navParams.get('uid');
+    //console.log('chatroom: ' + this.uid);
+    this.userOccupation = this.afDB.list('userProfile/' + this.uid).valueChanges().subscribe(data=>{
+      if(data.indexOf('instructor') != -1){
+        //console.log(data.indexOf('instructor') + ' is instructor');
+        this.isInstructor = true; 
+            
+      }
+      else{   
+        //console.log(data.indexOf('instructor') + ' not instructor');
+        this.isInstructor = false;
+      }
+    });
+  
+  /**testing new infinite scroll  */
+  this.loadComments();
+  this.scrollToBottom();
+  }
+
+  ngAfterViewChecked() {
+    this.scrollToBottom();
+}
+
+onScroll() {
+    let element = this.commentlist.nativeElement
+    let atBottom = element.scrollHeight - element.scrollTop === element.clientHeight
+    if (this.disableScrollDown && atBottom) {
+        this.disableScrollDown = false
+    } else {
+        this.disableScrollDown = true
+    }
+
+    if(this.commentlist.nativeElement.scrollTop === 0){
+      this.retrieveInt += 10;
+      this.loadComments();
+      console.log('scrolltop: ');
+    }
+}
+
+
+ scrollToBottom() {
+    if (this.disableScrollDown) {
+        return
+    }
+    try {
+        this.commentlist.nativeElement.scrollTop = this.commentlist.nativeElement.scrollHeight;
+    } catch(err) { }
+}
+
+  loadComments(){
+    this.chatroomRefA = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
+      let q = ref.orderByKey().limitToLast(this.retrieveInt);//get the very last 10 query in the database
+      return q;
+    });
+    this.comments = this.chatroomRefA.valueChanges();
+  }
+
+  newComments(){
     this.knownKeyArray = [];//empty array to store keys 
     let q,k;
     this.chatroomRefA = this.afDB.list('chatrooms/' + this.chatroomID + '/comments', ref=>{
@@ -140,24 +209,6 @@ export class CommentsComponent {
           //console.log('new comment', this.comments);
         });
         console.log("CHANGES");
-      }
-    });
-    /**
-     * check if the user is an instructor using the userProfile database and the id of the user logged on
-     * and change the value of occupation and if it contains 'instructor'.
-     * need to add the property manually in firebase. userProfile>[uid]> {occupation: 'instructor'}
-     */
-    this.uid = this.navParams.get('uid');
-    //console.log('chatroom: ' + this.uid);
-    this.userOccupation = this.afDB.list('userProfile/' + this.uid).valueChanges().subscribe(data=>{
-      if(data.indexOf('instructor') != -1){
-        //console.log(data.indexOf('instructor') + ' is instructor');
-        this.isInstructor = true; 
-            
-      }
-      else{   
-        //console.log(data.indexOf('instructor') + ' not instructor');
-        this.isInstructor = false;
       }
     });
   }
@@ -303,15 +354,21 @@ export class CommentsComponent {
    * @param commentID commentkey id
    */
   removeComment(event, commentID){
-    if(this.isInstructor){
-      let commentTempMap = this.comments.map(arr=>arr.commentKey);//create a temp map of the comments array with only the comment keys
-      let commentIndex = commentTempMap.indexOf(commentID)//get the index of the commentID in the temp map
-      console.log('commentID',commentID, commentIndex);
-      
-      this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).remove();
-      this.comments.splice(commentIndex, 1);
-      //console.log('commentsafter', this.comments);
-    }
+    //try{
+      if(this.isInstructor){
+        // let commentTempMap = this.comments.map(arr=>arr.commentKey);//create a temp map of the comments array with only the comment keys
+        // let commentIndex = commentTempMap.indexOf(commentID)//get the index of the commentID in the temp map
+        // console.log('commentID',commentID, commentIndex);
+        
+        this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).remove();
+        //this.comments.splice(commentIndex, 1);
+        //console.log('commentKeyTemp', this.commentKeyTemp);
+      }
+    //}
+    // catch(err){
+    //   //console.log(err)
+    // }
+    
   }
 
   /**
@@ -325,6 +382,7 @@ export class CommentsComponent {
     let voted = false;
     let commentKey = null;
     let newPoints = 0;
+    let commentRef = this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID);
     if(this.comment_votes != null){
       //console.log(this.comment_votes);
       for(let voteKey in this.comment_votes){
@@ -351,7 +409,6 @@ export class CommentsComponent {
         }
       }
     }
-
     if(!voted){
       //console.log(commentID + " " + commentPoints + " " + pointDelta);
       /**
@@ -382,25 +439,22 @@ export class CommentsComponent {
     /**
      * update points
      */
-    this.afDB.object('chatrooms/' + this.chatroomID + '/comments/' + commentID).update({
+    commentRef.update({
       points: newPoints
     }); 
 
+    // commentRef.valueChanges().subscribe(data=>{
+    //   let tempMap = this.comments.map(key=> key.commentKey);
+    //   let comment_to_replace = tempMap.indexOf(commentID);
+    //   if(comment_to_replace != -1){
+    //     this.comments[comment_to_replace] = data;
+    //   }
+    //   console.log(data);
+    // })
 
   }
 
-  /**
-   * scroll to bottom
-   */
-  scrollToBottom(): void{
-    try{
-      this.commentlist.nativeElement.scrollTop = this.commentlist.nativeElement.scrollHeight;
-      console.log('scrolltobottom: ');
-    }
-    catch(err){
-      console.log('did not scrolltobottom: ' + err);
-    }
-  }
+  
 
   detBtnColor(vote_history: Array<any> , btnValue){
     //console.log(vote_history);
